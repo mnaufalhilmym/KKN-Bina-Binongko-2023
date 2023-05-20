@@ -1,0 +1,11 @@
+@import url("./font-poppins.css");
+@import url("./font-futura-pt.css");
+@import url("./font-tahu.css");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}

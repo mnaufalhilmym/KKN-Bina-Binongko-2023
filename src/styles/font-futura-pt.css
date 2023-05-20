@@ -1,0 +1,60 @@
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: "Futura PT";
+  font-style: normal;
+  font-weight: 400;
+  src: local("Futura PT"),
+    url("/src/assets/fonts/futura-pt/FuturaCyrillicBook.ttf") format("truetype");
+}
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: "Futura PT";
+  font-style: normal;
+  font-weight: 300;
+  src: local("Futura PT"),
+    url("/src/assets/fonts/futura-pt/FuturaCyrillicLight.ttf")
+      format("truetype");
+}
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: "Futura PT";
+  font-style: normal;
+  font-weight: 450;
+  src: local("Futura PT"),
+    url("/src/assets/fonts/futura-pt/FuturaCyrillicMedium.ttf")
+      format("truetype");
+}
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: "Futura PT";
+  font-style: normal;
+  font-weight: 500;
+  src: local("Futura PT"),
+    url("/src/assets/fonts/futura-pt/FuturaCyrillicDemi.ttf") format("truetype");
+}
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: "Futura PT";
+  font-style: normal;
+  font-weight: 600;
+  src: local("Futura PT"),
+    url("/src/assets/fonts/futura-pt/FuturaCyrillicHeavy.ttf")
+      format("truetype");
+}
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: "Futura PT";
+  font-style: normal;
+  font-weight: 700;
+  src: local("Futura PT"),
+    url("/src/assets/fonts/futura-pt/FuturaCyrillicBold.ttf") format("truetype");
+}
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: "Futura PT";
+  font-style: normal;
+  font-weight: 800;
+  src: local("Futura PT"),
+    url("/src/assets/fonts/futura-pt/FuturaCyrillicExtraBold.ttf")
+      format("truetype");
+}
