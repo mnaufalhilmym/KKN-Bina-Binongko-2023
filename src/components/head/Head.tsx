@@ -1,19 +1,10 @@
 import { MetaProvider, Title } from "@solidjs/meta";
-import { Show } from "solid-js";
-import SiteInfo from "../../data/siteInfo";
+import SiteHead from "../../state/siteHead";
 
-interface Props {
-  title?: string;
-}
-
-export default function Head(props: Props) {
+export default function Head() {
   return (
     <MetaProvider>
-      <Show when={props.title} fallback={<Title>{SiteInfo.title}</Title>}>
-        <Title>
-          {props.title} | {SiteInfo.title}
-        </Title>
-      </Show>
+      <Title>{SiteHead.title()}</Title>
     </MetaProvider>
   );
 }

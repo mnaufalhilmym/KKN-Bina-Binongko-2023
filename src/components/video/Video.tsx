@@ -1,7 +1,7 @@
 import { Show, createSignal } from "solid-js";
 import IconPlayCircle from "../icons/PlayCircle";
 import IconPauseCircle from "../icons/PauseCircle";
-import siteImages from "../../data/siteImages";
+import siteImages from "../../contents/images";
 import Scan from "../icons/Scan";
 
 interface Props {

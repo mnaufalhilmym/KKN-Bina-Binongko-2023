@@ -1,6 +1,9 @@
 import { RouteDefinition, useRoutes } from "@solidjs/router";
-import { Component, lazy } from "solid-js";
+import { Component, createRenderEffect, lazy } from "solid-js";
 import SitePath from "./data/sitePath";
+import LoadingState from "./state/loadingState";
+import Head from "./components/head/Head";
+import SiteHead from "./state/siteHead";
 
 const routes: RouteDefinition[] = [
   {
@@ -18,7 +21,17 @@ const routes: RouteDefinition[] = [
 const App: Component = () => {
   const Routes = useRoutes(routes);
 
-  return <Routes />;
+  createRenderEffect(() => {
+    LoadingState.init(false);
+    SiteHead.init();
+  });
+
+  return (
+    <>
+      <Head />
+      <Routes />
+    </>
+  );
 };
 
 export default App;
