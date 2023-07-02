@@ -1,13 +1,13 @@
-interface BudayaI {
+interface GaleriI {
   attributes: {
-    nama: string;
+    judul: string;
     foto: {
       data: {
         attributes: {
           url: string;
         };
-      }[];
+      };
     };
-    deskripsi: string;
+    deskripsi: string | null;
   };
 }

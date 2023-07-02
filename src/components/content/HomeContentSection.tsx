@@ -1,6 +1,7 @@
 import { For, Show } from "solid-js";
 import Card from "../card/HomeContentCard";
 import LoadingSkeleton from "../loading/LoadingSkeleton";
+import HomeSection from "./HomeSection";
 
 interface Props {
   title1: string;
@@ -12,18 +13,8 @@ interface Props {
 
 export default function HomeContentSection(props: Props) {
   return (
-    <>
-      <div>
-        <div class="w-fit mx-auto">
-          <span class="font-tahu text-2xl text-sea_serpent">
-            {props.title1}
-          </span>
-        </div>
-        <div class="w-fit mx-auto">
-          <span class="font-poppins font-bold text-3xl">{props.title2}</span>
-        </div>
-      </div>
-      <div class="mt-6 flex justify-center flex-wrap gap-8">
+    <HomeSection title1={props.title1} title2={props.title2}>
+      <div class="flex justify-center flex-wrap gap-8">
         <Show
           when={!props.isLoading}
           fallback={
@@ -51,6 +42,6 @@ export default function HomeContentSection(props: Props) {
           </For>
         </Show>
       </div>
-    </>
+    </HomeSection>
   );
 }

@@ -1,3 +1,3 @@
 export default function Footer() {
-  return <>Footer</>;
+  return <div class="bg-gargoyle_gas">Footer</div>;
 }

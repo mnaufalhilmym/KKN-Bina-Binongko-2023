@@ -5,15 +5,14 @@ import Footer from "../components/footer/Footer";
 import Content from "../components/content/HomeContentSection";
 import { GqlClient } from "../api/gqlClient";
 import { gql } from "@apollo/client/core";
-import {
-  For,
-  Show,
-  createRenderEffect,
-  createSignal,
-  getOwner,
-} from "solid-js";
+import { Show, createRenderEffect, createSignal, getOwner } from "solid-js";
 import SiteHead from "../state/siteHead";
 import { CenterModal } from "../components/modal/CenterModal";
+import PhotoSlider from "../components/slider/PhotoSlider";
+import IconLocation from "../components/icons/Location";
+import Gallery from "../components/content/HomeGallerySection";
+import Blog from "../components/content/HomeBlogSection";
+import Map from "../components/content/HomeMapSection";
 
 async function fetchHome() {
   const client = GqlClient.client;
@@ -23,12 +22,13 @@ async function fetchHome() {
       wisatas: { data: WisataI[] };
       budayas: { data: BudayaI[] };
       industris: { data: IndustriI[] };
+      galeris: { data: GaleriI[] };
+      blogs: { data: BlogI[] };
     }>({
       query: gql`
         query Home {
           wisatas(sort: "publishedAt:asc") {
             data {
-              id
               attributes {
                 nama
                 lokasi
@@ -45,7 +45,6 @@ async function fetchHome() {
           }
           budayas(sort: "publishedAt:asc") {
             data {
-              id
               attributes {
                 nama
                 foto {
@@ -61,7 +60,6 @@ async function fetchHome() {
           }
           industris(sort: "publishedAt:asc") {
             data {
-              id
               attributes {
                 nama
                 foto {
@@ -75,6 +73,29 @@ async function fetchHome() {
               }
             }
           }
+          galeris(sort: "publishedAt:asc") {
+            data {
+              attributes {
+                judul
+                foto {
+                  data {
+                    attributes {
+                      url
+                    }
+                  }
+                }
+                deskripsi
+              }
+            }
+          }
+          blogs(sort: "publishedAt:asc") {
+            data {
+              attributes {
+                judul
+                konten
+              }
+            }
+          }
         }
       `,
     });
@@ -85,6 +106,8 @@ async function fetchHome() {
       wisata: res.data.wisatas.data,
       budaya: res.data.budayas.data,
       industri: res.data.industris.data,
+      galeri: res.data.galeris.data,
+      blog: res.data.blogs.data,
     };
   } catch (e) {
     console.error("Error when fetching home data");
@@ -98,6 +121,8 @@ export default function HomeScreen() {
   const [wisata, setWisata] = createSignal<WisataI[]>([]);
   const [budaya, setBudaya] = createSignal<BudayaI[]>([]);
   const [industri, setIndustri] = createSignal<IndustriI[]>([]);
+  const [galeri, setGaleri] = createSignal<GaleriI[]>([]);
+  const [blog, setBlog] = createSignal<BlogI[]>([]);
   const owner = getOwner();
   const ContentModalLayer = new CenterModal({ owner, cardClass: "w-2/3" });
 
@@ -117,6 +142,8 @@ export default function HomeScreen() {
     setWisata(data.wisata);
     setBudaya(data.budaya);
     setIndustri(data.industri);
+    setGaleri(data.galeri);
+    setBlog(data.blog);
 
     setIsLoading(false);
   });
@@ -214,6 +241,43 @@ export default function HomeScreen() {
       </Show>
       {/* End of industri kerajinan */}
 
+      {/* Start of galeri */}
+      <Show when={isLoading() || (!isLoading() && galeri().length > 0)}>
+        <div id="galeri" class="pt-28 px-32">
+          <Gallery
+            title1=""
+            title2="Galeri"
+            galeri={galeri()}
+            isLoading={isLoading()}
+          />
+        </div>
+      </Show>
+      {/* End of galeri */}
+
+      {/* Start of blog */}
+      <Show when={isLoading() || (!isLoading() && blog().length > 0)}>
+        <div id="blog" class="pt-28 px-32">
+          <Blog
+            title1=""
+            title2="Blog"
+            blog={blog()}
+            isLoading={isLoading()}
+          />
+        </div>
+      </Show>
+      {/* End of blog */}
+
+      {/* Start of peta */}
+      <Show when={isLoading() || (!isLoading() && blog().length > 0)}>
+        <div id="peta" class="pt-28 px-32">
+          <Map
+            title1=""
+            title2="Peta"
+          />
+        </div>
+      </Show>
+      {/* End of peta */}
+
       <div class="pt-28" />
 
       <Footer />
@@ -233,19 +297,25 @@ function ModalContent(props: ModalHomeContentProps) {
         </span>
       </div>
       <Show when={props.subtitle}>
-        <div>
+        <div class="flex justify-center items-center gap-x-1">
+          <span>
+            <IconLocation class="w-5 h-5 text-sea_serpent" />
+          </span>
           <span class="block font-futura_pt text-center">{props.subtitle}</span>
         </div>
       </Show>
-      <div class="mt-8 flex gap-x-4">
-        <div>
-          <For each={props.imgUrls}>
-            {(imgUrl) => (
-              <img src={import.meta.env.VITE_BACKEND_ENDPOINT + imgUrl} />
-            )}
-          </For>
+      <div class="mt-8 flex gap-x-6">
+        <div class="flex-1">
+          <PhotoSlider imgUrls={props.imgUrls} />
         </div>
-        <div>{props.description}</div>
+        <div class="p-4 flex-1 bg-gargoyle_gas/20 font-futura_pt shadow-md rounded-3xl">
+          <div>
+            <span>Deskripsi:</span>
+          </div>
+          <div>
+            <span>{props.description}</span>
+          </div>
+        </div>
       </div>
     </>
   );

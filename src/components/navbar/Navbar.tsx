@@ -51,13 +51,13 @@ export default function Navbar() {
           <Link href={`${SitePath.home}#kerajinan`} isOnTop={isOnTop()}>
             Kerajinan
           </Link>
-          <Link href={SitePath.home} isOnTop={isOnTop()}>
+          <Link href={`${SitePath.home}#galeri`} isOnTop={isOnTop()}>
             Galeri
           </Link>
-          <Link href={SitePath.home} isOnTop={isOnTop()}>
+          <Link href={`${SitePath.home}#blog`} isOnTop={isOnTop()}>
             Blog
           </Link>
-          <Link href={SitePath.home} isOnTop={isOnTop()}>
+          <Link href={`${SitePath.home}#peta`} isOnTop={isOnTop()}>
             Peta
           </Link>
         </nav>

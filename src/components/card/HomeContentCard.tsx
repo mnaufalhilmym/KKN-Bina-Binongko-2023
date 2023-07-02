@@ -1,6 +1,6 @@
 import { Show } from "solid-js";
 import IconLocation from "../icons/Location";
-import IconArrowForwardCircle from "../icons/ArrowForwardCircle";
+import IconArrowCircle from "../icons/ArrowForwardCircle";
 
 interface Props {
   name: string;
@@ -22,7 +22,7 @@ export default function HomeContentCard(props: Props) {
 
   return (
     <div
-      class="w-60 h-96 group relative rounded-2xl overflow-hidden"
+      class="w-60 h-96 group relative rounded-2xl shadow-md overflow-hidden"
       role="button"
       onclick={onClick}
     >
@@ -45,7 +45,11 @@ export default function HomeContentCard(props: Props) {
       <div class="absolute bottom-0 z-10 w-full flex items-center justify-between gap-x-2 p-4 h-[88px]">
         <span class="font-futura_pt text-xl text-white">{props.name}</span>
         <span>
-          <IconArrowForwardCircle type="outline" class="w-8 h-8 text-white" />
+          <IconArrowCircle
+            type="outline"
+            direction="forward"
+            class="w-8 h-8 text-white"
+          />
         </span>
       </div>
       <div class="absolute bottom-0 w-full h-32 bg-gradient-to-b from-transparent to-sea_serpent to-80%" />

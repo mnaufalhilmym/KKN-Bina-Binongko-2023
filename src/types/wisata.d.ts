@@ -1,5 +1,4 @@
 interface WisataI {
-  id: string;
   attributes: {
     nama: string;
     lokasi: string;
