@@ -1,20 +1,35 @@
-import { For, Show } from "solid-js";
+import { For, Show, createMemo, createSignal } from "solid-js";
 import Card from "../card/HomeContentCard";
 import LoadingSkeleton from "../loading/LoadingSkeleton";
 import HomeSection from "./HomeSection";
+import ViewMore from "./ViewMore";
+import { createElementSize } from "@solid-primitives/resize-observer";
 
 interface Props {
   title1: string;
   title2: string;
-  contents: (WisataI | BudayaI | IndustriI)[];
+  contents: {
+    pagination: PaginationI;
+    data: (WisataI | BudayaI | IndustriI)[];
+  };
+  readMoreHref: string;
   isLoading: boolean;
   onClickContent: (content: ModalHomeContentProps) => void;
 }
 
 export default function HomeContentSection(props: Props) {
+  const [ref, setRef] = createSignal<HTMLDivElement>();
+  const size = createElementSize(ref);
+  const isShowViewMore = createMemo(() =>
+    size.height ? size.height > window.innerHeight * 0.7 : false
+  );
+
   return (
     <HomeSection title1={props.title1} title2={props.title2}>
-      <div class="flex justify-center flex-wrap gap-8">
+      <div
+        ref={setRef}
+        class="relative max-h-[70vh] flex justify-center flex-wrap gap-8 overflow-hidden"
+      >
         <Show
           when={!props.isLoading}
           fallback={
@@ -23,7 +38,7 @@ export default function HomeContentSection(props: Props) {
             </For>
           }
         >
-          <For each={props.contents}>
+          <For each={props.contents.data}>
             {(dest) => (
               <Card
                 name={dest.attributes.nama}
@@ -40,6 +55,15 @@ export default function HomeContentSection(props: Props) {
               />
             )}
           </For>
+          <Show
+            when={
+              isShowViewMore() ||
+              props.contents.pagination.total >
+                props.contents.pagination.pageSize
+            }
+          >
+            <ViewMore href={props.readMoreHref} />
+          </Show>
         </Show>
       </div>
     </HomeSection>

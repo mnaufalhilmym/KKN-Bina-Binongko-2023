@@ -52,7 +52,7 @@ export default function PhotoSlider(props: Props) {
                 src={
                   import.meta.env.VITE_BACKEND_ENDPOINT + props.imgUrls.at(-1)
                 }
-                alt="Hope for the future"
+                loading="lazy"
                 class="w-full h-full object-cover"
               />
             </div>
@@ -62,6 +62,7 @@ export default function PhotoSlider(props: Props) {
               <div class="w-full h-full flex-none">
                 <img
                   src={import.meta.env.VITE_BACKEND_ENDPOINT + imgSrc}
+                  loading="lazy"
                   class="w-full h-full object-cover"
                 />
               </div>
@@ -73,6 +74,7 @@ export default function PhotoSlider(props: Props) {
                 src={
                   import.meta.env.VITE_BACKEND_ENDPOINT + props.imgUrls.at(0)
                 }
+                loading="lazy"
                 class="w-full h-full object-cover"
               />
             </div>

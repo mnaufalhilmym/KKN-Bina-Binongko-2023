@@ -2,7 +2,8 @@ import { For, Show } from "solid-js";
 import HomeSection from "./HomeSection";
 import LoadingSkeleton from "../loading/LoadingSkeleton";
 import Card from "../card/HomeBlogCard";
-import { A } from "@solidjs/router";
+import ViewMore from "./ViewMore";
+import SitePath from "../../data/sitePath";
 
 interface Props {
   title1: string;
@@ -14,7 +15,7 @@ interface Props {
 export default function HomeBlogSection(props: Props) {
   return (
     <HomeSection title1={props.title1} title2={props.title2}>
-      <div class="relative flex flex-wrap">
+      <div class="relative max-h-[70vh] flex flex-wrap overflow-hidden">
         <Show
           when={!props.isLoading}
           fallback={
@@ -37,17 +38,7 @@ export default function HomeBlogSection(props: Props) {
               </div>
             )}
           </For>
-          <div class="absolute bottom-10 w-full h-2/5 bg-gradient-to-b from-transparent to-white">
-            <div class="absolute bottom-0 w-full">
-              <A
-                href="/blog"
-                class="block w-fit mx-auto font-bold font-futura_pt"
-              >
-                Lihat selengkapnya
-              </A>
-            </div>
-          </div>
-          <div class="absolute bottom-0 w-full h-10 bg-white" />
+          <ViewMore href={SitePath.blog} />
         </Show>
       </div>
     </HomeSection>

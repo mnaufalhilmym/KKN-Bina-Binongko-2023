@@ -7,7 +7,7 @@ import {
   runWithOwner,
   Setter,
 } from "solid-js";
-import styles from "./CenterModal.module.css";
+import styles from "../../styles/centerModal.module.css";
 
 interface Config {
   owner: Owner | null;

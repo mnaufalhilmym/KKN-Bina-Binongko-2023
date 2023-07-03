@@ -1,14 +1,19 @@
-import { A } from "@solidjs/router";
+import { A, useLocation } from "@solidjs/router";
 import SitePath from "../../data/sitePath";
 import SiteInfo from "../../data/siteInfo";
-import { createSignal, onCleanup, onMount } from "solid-js";
+import { createMemo, createSignal, onCleanup, onMount } from "solid-js";
+import getPath from "../../utils/getPath";
+import { PathE } from "../../enum/path";
 
 export default function Navbar() {
-  const [isOnTop, setIsOnTop] = createSignal(checkIsOnTop());
+  const location = useLocation<string>();
+  const path = createMemo(() => getPath(location.pathname));
+  const isOnHome = createMemo(() => path() === PathE.beranda);
+  const [isOnTop, setIsOnTop] = createSignal(checkIsOnTopOfHome());
 
   onMount(() => {
     const scrollListener = () => {
-      setIsOnTop(checkIsOnTop());
+      setIsOnTop(checkIsOnTopOfHome());
     };
 
     document.addEventListener("scroll", scrollListener);
@@ -17,8 +22,8 @@ export default function Navbar() {
     });
   });
 
-  function checkIsOnTop() {
-    return window.scrollY < 100;
+  function checkIsOnTopOfHome() {
+    return isOnHome() && window.scrollY < 100;
   }
 
   return (
@@ -29,7 +34,10 @@ export default function Navbar() {
       >
         <div class="h-full flex gap-x-4 items-center">
           <img
-            src="/src/assets/logo.png"
+            src={
+              import.meta.env.VITE_BASE_URL +
+              "/src/assets/logo/bina-binongko.webp"
+            }
             alt="Logo Bina Binongko"
             loading="lazy"
             class="w-16 h-16"
@@ -38,26 +46,52 @@ export default function Navbar() {
             {SiteInfo.title}
           </span>
         </div>
-        <nav class="flex gap-x-1 font-poppins">
-          <Link href={SitePath.home} isOnTop={isOnTop()}>
+        <nav class="flex items-center gap-x-1 font-poppins">
+          <Link href={SitePath.beranda} isOnTop={isOnTop()}>
             Beranda
           </Link>
-          <Link href={`${SitePath.home}#tempat-wisata`} isOnTop={isOnTop()}>
+          <Link
+            href={isOnHome() ? `${SitePath.beranda}#wisata` : SitePath.wisata}
+            isOnTop={isOnTop()}
+          >
             Tempat Wisata
           </Link>
-          <Link href={`${SitePath.home}#budaya-tradisi`} isOnTop={isOnTop()}>
+          <Link
+            href={
+              isOnHome()
+                ? `${SitePath.beranda}#budaya-tradisi`
+                : SitePath.budaya_tradisi
+            }
+            isOnTop={isOnTop()}
+          >
             Budaya & Tradisi
           </Link>
-          <Link href={`${SitePath.home}#kerajinan`} isOnTop={isOnTop()}>
-            Kerajinan
+          <Link
+            href={
+              isOnHome()
+                ? `${SitePath.beranda}#industri-kerajinan`
+                : SitePath.industri_kerajinan
+            }
+            isOnTop={isOnTop()}
+          >
+            Industri & Kerajinan
           </Link>
-          <Link href={`${SitePath.home}#galeri`} isOnTop={isOnTop()}>
+          <Link
+            href={isOnHome() ? `${SitePath.beranda}#galeri` : SitePath.galeri}
+            isOnTop={isOnTop()}
+          >
             Galeri
           </Link>
-          <Link href={`${SitePath.home}#blog`} isOnTop={isOnTop()}>
+          <Link
+            href={isOnHome() ? `${SitePath.beranda}#blog` : SitePath.blog}
+            isOnTop={isOnTop()}
+          >
             Blog
           </Link>
-          <Link href={`${SitePath.home}#peta`} isOnTop={isOnTop()}>
+          <Link
+            href={isOnHome() ? `${SitePath.beranda}#peta` : SitePath.peta}
+            isOnTop={isOnTop()}
+          >
             Peta
           </Link>
         </nav>
@@ -80,7 +114,7 @@ function Link(props: LinkProps) {
         props.isOnTop
           ? "hover:bg-white"
           : "hover:bg-sea_serpent hover:text-white"
-      } rounded-2xl transition-color duration-300`}
+      } text-center rounded-2xl transition-color duration-300`}
     >
       {props.children}
     </A>

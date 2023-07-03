@@ -1,5 +1,6 @@
 import { marked } from "marked";
-import styles from "./HomeBlogCard.module.css";
+import styles from "../../styles/blog.module.css";
+import manipulatePostContent from "../../utils/manipulatePostContent";
 
 interface Props {
   title: string;
@@ -19,12 +20,5 @@ export default function HomeBlogCard(props: Props) {
         class={`mt-2 font-futura_pt text-justify break-words ${styles.content}`}
       />
     </div>
-  );
-}
-
-function manipulatePostContent(content: string) {
-  return content.replaceAll(
-    "/uploads/",
-    `${import.meta.env.VITE_BACKEND_ENDPOINT}/uploads/`
   );
 }

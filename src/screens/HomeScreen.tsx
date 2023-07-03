@@ -1,7 +1,6 @@
 import Video from "../components/video/Video";
 import siteImages from "../contents/images";
 import siteVideos from "../contents/videos";
-import Footer from "../components/footer/Footer";
 import Content from "../components/content/HomeContentSection";
 import { GqlClient } from "../api/gqlClient";
 import { gql } from "@apollo/client/core";
@@ -13,21 +12,29 @@ import IconLocation from "../components/icons/Location";
 import Gallery from "../components/content/HomeGallerySection";
 import Blog from "../components/content/HomeBlogSection";
 import Map from "../components/content/HomeMapSection";
+import SitePath from "../data/sitePath";
+import { defaultPagination } from "../types/defaultValue/pagination";
 
 async function fetchHome() {
   const client = GqlClient.client;
 
   try {
     const res = await client.query<{
-      wisatas: { data: WisataI[] };
-      budayas: { data: BudayaI[] };
-      industris: { data: IndustriI[] };
-      galeris: { data: GaleriI[] };
+      wisatas: { meta: { pagination: PaginationI }; data: WisataI[] };
+      budayas: { meta: { pagination: PaginationI }; data: BudayaI[] };
+      industris: { meta: { pagination: PaginationI }; data: IndustriI[] };
+      galeris: { meta: { pagination: PaginationI }; data: GaleriI[] };
       blogs: { data: BlogI[] };
     }>({
       query: gql`
         query Home {
-          wisatas(sort: "publishedAt:asc") {
+          wisatas(sort: "publishedAt:asc", pagination: { limit: 4 }) {
+            meta {
+              pagination {
+                total
+                pageSize
+              }
+            }
             data {
               attributes {
                 nama
@@ -43,7 +50,13 @@ async function fetchHome() {
               }
             }
           }
-          budayas(sort: "publishedAt:asc") {
+          budayas(sort: "publishedAt:asc", pagination: { limit: 4 }) {
+            meta {
+              pagination {
+                total
+                pageSize
+              }
+            }
             data {
               attributes {
                 nama
@@ -58,7 +71,13 @@ async function fetchHome() {
               }
             }
           }
-          industris(sort: "publishedAt:asc") {
+          industris(sort: "publishedAt:asc", pagination: { limit: 4 }) {
+            meta {
+              pagination {
+                total
+                pageSize
+              }
+            }
             data {
               attributes {
                 nama
@@ -73,10 +92,15 @@ async function fetchHome() {
               }
             }
           }
-          galeris(sort: "publishedAt:asc") {
+          galeris(sort: "publishedAt:asc", pagination: { limit: 8 }) {
+            meta {
+              pagination {
+                total
+                pageSize
+              }
+            }
             data {
               attributes {
-                judul
                 foto {
                   data {
                     attributes {
@@ -84,7 +108,6 @@ async function fetchHome() {
                     }
                   }
                 }
-                deskripsi
               }
             }
           }
@@ -100,13 +123,23 @@ async function fetchHome() {
       `,
     });
 
-    if (res.errors) throw res.errors;
-
     return {
-      wisata: res.data.wisatas.data,
-      budaya: res.data.budayas.data,
-      industri: res.data.industris.data,
-      galeri: res.data.galeris.data,
+      wisata: {
+        pagination: res.data.wisatas.meta.pagination,
+        data: res.data.wisatas.data,
+      },
+      budaya: {
+        pagination: res.data.budayas.meta.pagination,
+        data: res.data.budayas.data,
+      },
+      industri: {
+        pagination: res.data.industris.meta.pagination,
+        data: res.data.industris.data,
+      },
+      galeri: {
+        pagination: res.data.galeris.meta.pagination,
+        data: res.data.galeris.data,
+      },
       blog: res.data.blogs.data,
     };
   } catch (e) {
@@ -118,10 +151,22 @@ async function fetchHome() {
 export default function HomeScreen() {
   const [isLoading, setIsLoading] = createSignal(true);
   const [isError, setIsError] = createSignal(false);
-  const [wisata, setWisata] = createSignal<WisataI[]>([]);
-  const [budaya, setBudaya] = createSignal<BudayaI[]>([]);
-  const [industri, setIndustri] = createSignal<IndustriI[]>([]);
-  const [galeri, setGaleri] = createSignal<GaleriI[]>([]);
+  const [wisata, setWisata] = createSignal<{
+    pagination: PaginationI;
+    data: WisataI[];
+  }>({ pagination: defaultPagination, data: [] });
+  const [budaya, setBudaya] = createSignal<{
+    pagination: PaginationI;
+    data: BudayaI[];
+  }>({ pagination: defaultPagination, data: [] });
+  const [industri, setIndustri] = createSignal<{
+    pagination: PaginationI;
+    data: IndustriI[];
+  }>({ pagination: defaultPagination, data: [] });
+  const [galeri, setGaleri] = createSignal<{
+    pagination: PaginationI;
+    data: GaleriI[];
+  }>({ pagination: defaultPagination, data: [] });
   const [blog, setBlog] = createSignal<BlogI[]>([]);
   const owner = getOwner();
   const ContentModalLayer = new CenterModal({ owner, cardClass: "w-2/3" });
@@ -158,7 +203,7 @@ export default function HomeScreen() {
       {/* Start of hero banner */}
       <div class="relative max-w-screen max-h-screen overflow-hidden flex items-center justify-center">
         <img
-          src={siteImages.aerial_view.url}
+          src={import.meta.env.VITE_BASE_URL + siteImages.aerial_view.url}
           alt={siteImages.aerial_view.alt}
           class="brightness-[0.8]"
         />
@@ -200,12 +245,13 @@ export default function HomeScreen() {
       {/* End of mengenal togo binongko */}
 
       {/* Start of jelajahi togo binongko */}
-      <Show when={isLoading() || (!isLoading() && wisata().length > 0)}>
-        <div id="tempat-wisata" class="pt-28 px-32">
+      <Show when={isLoading() || (!isLoading() && wisata().data.length > 0)}>
+        <div id="wisata" class="pt-28 px-32">
           <Content
             title1="Jelajahi"
             title2="Destinasi Wisata"
             contents={wisata()}
+            readMoreHref={SitePath.wisata}
             isLoading={isLoading()}
             onClickContent={showModalContent}
           />
@@ -214,12 +260,13 @@ export default function HomeScreen() {
       {/* End of jelajahi togo binongko */}
 
       {/* Start of budaya dan tradisi */}
-      <Show when={isLoading() || (!isLoading() && budaya().length > 0)}>
+      <Show when={isLoading() || (!isLoading() && budaya().data.length > 0)}>
         <div id="budaya-tradisi" class="pt-28 px-32">
           <Content
             title1="Nikmati"
             title2="Budaya dan Tradisi"
             contents={budaya()}
+            readMoreHref={SitePath.budaya_tradisi}
             isLoading={isLoading()}
             onClickContent={showModalContent}
           />
@@ -227,22 +274,23 @@ export default function HomeScreen() {
       </Show>
       {/* End of budaya dan tradisi */}
 
-      {/* Start of industri kerajinan */}
-      <Show when={isLoading() || (!isLoading() && industri().length > 0)}>
-        <div id="kerajinan" class="pt-28 px-32">
+      {/* Start of industri dan kerajinan */}
+      <Show when={isLoading() || (!isLoading() && industri().data.length > 0)}>
+        <div id="industri-kerajinan" class="pt-28 px-32">
           <Content
             title1="Kenali"
-            title2="Industri Kerajinan"
+            title2="Industri dan Kerajinan"
             contents={industri()}
+            readMoreHref={SitePath.industri_kerajinan}
             isLoading={isLoading()}
             onClickContent={showModalContent}
           />
         </div>
       </Show>
-      {/* End of industri kerajinan */}
+      {/* End of industri dan kerajinan */}
 
       {/* Start of galeri */}
-      <Show when={isLoading() || (!isLoading() && galeri().length > 0)}>
+      <Show when={isLoading() || (!isLoading() && galeri().data.length > 0)}>
         <div id="galeri" class="pt-28 px-32">
           <Gallery
             title1=""
@@ -257,12 +305,7 @@ export default function HomeScreen() {
       {/* Start of blog */}
       <Show when={isLoading() || (!isLoading() && blog().length > 0)}>
         <div id="blog" class="pt-28 px-32">
-          <Blog
-            title1=""
-            title2="Blog"
-            blog={blog()}
-            isLoading={isLoading()}
-          />
+          <Blog title1="" title2="Blog" blog={blog()} isLoading={isLoading()} />
         </div>
       </Show>
       {/* End of blog */}
@@ -270,17 +313,10 @@ export default function HomeScreen() {
       {/* Start of peta */}
       <Show when={isLoading() || (!isLoading() && blog().length > 0)}>
         <div id="peta" class="pt-28 px-32">
-          <Map
-            title1=""
-            title2="Peta"
-          />
+          <Map title1="" title2="Peta" />
         </div>
       </Show>
       {/* End of peta */}
-
-      <div class="pt-28" />
-
-      <Footer />
 
       {/* Modal */}
       {ContentModalLayer.render()}

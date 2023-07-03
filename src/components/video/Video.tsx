@@ -68,7 +68,10 @@ export default function Video(props: Props) {
         onpause={() => setIsPlaying(false)}
         onended={() => setIsPlaying(false)}
       >
-        <source src={props.src} type={props.type} />
+        <source
+          src={import.meta.env.VITE_BASE_URL + props.src}
+          type={props.type}
+        />
       </video>
     </div>
   );

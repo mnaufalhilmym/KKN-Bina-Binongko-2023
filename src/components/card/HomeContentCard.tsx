@@ -40,6 +40,7 @@ export default function HomeContentCard(props: Props) {
           props.imageUrls[Math.floor(Math.random() * props.imageUrls.length)]
         }
         alt={props.name}
+        loading="lazy"
         class="w-full h-full object-cover group-hover:scale-125 transition-transform duration-300"
       />
       <div class="absolute bottom-0 z-10 w-full flex items-center justify-between gap-x-2 p-4 h-[88px]">

@@ -1,6 +1,5 @@
 interface GaleriI {
   attributes: {
-    judul: string;
     foto: {
       data: {
         attributes: {
@@ -8,6 +7,5 @@ interface GaleriI {
         };
       };
     };
-    deskripsi: string | null;
   };
 }

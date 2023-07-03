@@ -16,6 +16,7 @@ export default function HomeMapSection(props: Props) {
         allowfullscreen={false}
         loading="lazy"
         referrerpolicy="no-referrer-when-downgrade"
+        class="rounded-lg"
       />
     </HomeSection>
   );
