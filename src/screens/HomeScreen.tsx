@@ -6,14 +6,13 @@ import { GqlClient } from "../api/gqlClient";
 import { gql } from "@apollo/client/core";
 import { Show, createRenderEffect, createSignal, getOwner } from "solid-js";
 import SiteHead from "../state/siteHead";
-import { CenterModal } from "../components/modal/CenterModal";
-import PhotoSlider from "../components/slider/PhotoSlider";
-import IconLocation from "../components/icons/Location";
+import CenterModal from "../components/modal/CenterModalWrapper";
 import Gallery from "../components/content/HomeGallerySection";
 import Blog from "../components/content/HomeBlogSection";
 import Map from "../components/content/HomeMapSection";
 import SitePath from "../data/sitePath";
 import { defaultPagination } from "../types/defaultValue/pagination";
+import ModalContent from "../components/modal/ContentModal";
 
 async function fetchHome() {
   const client = GqlClient.client;
@@ -89,6 +88,8 @@ async function fetchHome() {
                   }
                 }
                 deskripsi
+                kontak
+                nama_kontak
               }
             }
           }
@@ -149,7 +150,7 @@ async function fetchHome() {
 }
 
 export default function HomeScreen() {
-  const [isLoading, setIsLoading] = createSignal(true);
+  const [isLoading, setIsLoading] = createSignal(false);
   const [isError, setIsError] = createSignal(false);
   const [wisata, setWisata] = createSignal<{
     pagination: PaginationI;
@@ -168,14 +169,18 @@ export default function HomeScreen() {
     data: GaleriI[];
   }>({ pagination: defaultPagination, data: [] });
   const [blog, setBlog] = createSignal<BlogI[]>([]);
-  const owner = getOwner();
-  const ContentModalLayer = new CenterModal({ owner, cardClass: "w-2/3" });
+  const ContentModalWrapper = new CenterModal({
+    owner: getOwner(),
+    cardClass: "w-2/3",
+  });
 
   createRenderEffect(() => {
     SiteHead.title = "Beranda";
   });
 
   createRenderEffect(async () => {
+    setIsLoading(true);
+
     const data = await fetchHome();
 
     if (!data) {
@@ -193,9 +198,9 @@ export default function HomeScreen() {
     setIsLoading(false);
   });
 
-  function showModalContent(content: ModalHomeContentProps) {
-    ContentModalLayer.content = { element: ModalContent, props: [content] };
-    ContentModalLayer.isShow = true;
+  function showModalContent(content: ModalContentProps) {
+    ContentModalWrapper.content = { element: ModalContent, props: [content] };
+    ContentModalWrapper.isShow = true;
   }
 
   return (
@@ -311,48 +316,13 @@ export default function HomeScreen() {
       {/* End of blog */}
 
       {/* Start of peta */}
-      <Show when={isLoading() || (!isLoading() && blog().length > 0)}>
-        <div id="peta" class="pt-28 px-32">
-          <Map title1="" title2="Peta" />
-        </div>
-      </Show>
+      <div id="peta" class="pt-28 px-32">
+        <Map title1="" title2="Peta" />
+      </div>
       {/* End of peta */}
 
       {/* Modal */}
-      {ContentModalLayer.render()}
-    </>
-  );
-}
-
-function ModalContent(props: ModalHomeContentProps) {
-  return (
-    <>
-      <div>
-        <span class="block font-poppins font-bold text-3xl text-center">
-          {props.title}
-        </span>
-      </div>
-      <Show when={props.subtitle}>
-        <div class="flex justify-center items-center gap-x-1">
-          <span>
-            <IconLocation class="w-5 h-5 text-sea_serpent" />
-          </span>
-          <span class="block font-futura_pt text-center">{props.subtitle}</span>
-        </div>
-      </Show>
-      <div class="mt-8 flex gap-x-6">
-        <div class="flex-1">
-          <PhotoSlider imgUrls={props.imgUrls} />
-        </div>
-        <div class="p-4 flex-1 bg-gargoyle_gas/20 font-futura_pt shadow-md rounded-3xl">
-          <div>
-            <span>Deskripsi:</span>
-          </div>
-          <div>
-            <span>{props.description}</span>
-          </div>
-        </div>
-      </div>
+      {ContentModalWrapper.render()}
     </>
   );
 }

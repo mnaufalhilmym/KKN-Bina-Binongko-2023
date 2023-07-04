@@ -12,6 +12,7 @@ import {
 import { defaultPagination } from "../../types/defaultValue/pagination";
 import SiteHead from "../../state/siteHead";
 import LoadingSkeleton from "../../components/loading/LoadingSkeleton";
+import Card from "../../components/card/GalleryCard";
 
 async function fetchGallery({ page }: { page: number }) {
   const client = GqlClient.client;
@@ -63,7 +64,7 @@ async function fetchGallery({ page }: { page: number }) {
 
 export default function GaleriScreen() {
   let bottomItemElRef: HTMLDivElement | undefined;
-  const [isLoading, setIsLoading] = createSignal(true);
+  const [isLoading, setIsLoading] = createSignal(false);
   const [isError, setIsError] = createSignal(false);
   const [galeri, setGaleri] = createSignal<{
     pagination: PaginationI;
@@ -145,26 +146,17 @@ export default function GaleriScreen() {
           <span class="font-poppins font-bold text-3xl">Galeri</span>
         </div>
       </div>
-      <div class="mt-8 px-32 flex justify-center flex-wrap gap-4">
+      <div class="relative mt-8 px-32 flex justify-center flex-wrap gap-4">
         <For each={galeri().data}>
-          {(g) => (
-            <img
-              src={
-                import.meta.env.VITE_BACKEND_ENDPOINT +
-                g.attributes.foto.data.attributes.url
-              }
-              loading="lazy"
-              class="h-72 w-72 object-cover rounded-xl shadow-md"
-            />
-          )}
+          {(g) => <Card imgUrl={g.attributes.foto.data.attributes.url} />}
         </For>
-        <Show when={isLoading()}>
+        <Show when={isLoading() || isError()}>
           <For each={[0, 1, 2, 3]}>
-            {(i) => <LoadingSkeleton class="h-72 w-72 rounded-xl" />}
+            {() => <LoadingSkeleton class="h-72 w-72 rounded-xl" />}
           </For>
         </Show>
+        <div ref={bottomItemElRef} class="absolute -z-10 bottom-0 w-60 h-96" />
       </div>
-      <div ref={bottomItemElRef} />
     </>
   );
 }

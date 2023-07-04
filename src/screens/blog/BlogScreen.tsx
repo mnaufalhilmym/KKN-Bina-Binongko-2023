@@ -15,6 +15,10 @@ import LoadingSkeleton from "../../components/loading/LoadingSkeleton";
 import { marked } from "marked";
 import styles from "../../styles/blog.module.css";
 import manipulatePostContent from "../../utils/manipulatePostContent";
+import ViewMore from "../../components/content/ViewMore";
+import SitePath from "../../data/sitePath";
+import formatDateTime from "../../utils/formatDateTime";
+import { A } from "@solidjs/router";
 
 async function fetchBlog({ page }: { page: number }) {
   const client = GqlClient.client;
@@ -36,9 +40,11 @@ async function fetchBlog({ page }: { page: number }) {
               }
             }
             data {
+              id
               attributes {
                 judul
                 konten
+                createdAt
               }
             }
           }
@@ -61,7 +67,7 @@ async function fetchBlog({ page }: { page: number }) {
 
 export default function BlogScreen() {
   let bottomItemElRef: HTMLDivElement | undefined;
-  const [isLoading, setIsLoading] = createSignal(true);
+  const [isLoading, setIsLoading] = createSignal(false);
   const [isError, setIsError] = createSignal(false);
   const [blog, setBlog] = createSignal<{
     pagination: PaginationI;
@@ -87,6 +93,7 @@ export default function BlogScreen() {
       setIsLoading(true);
 
       const data = await fetchBlog({ page: _page });
+      console.log(">>>DATA,", data);
 
       if (!data) {
         setIsError(true);
@@ -137,37 +144,61 @@ export default function BlogScreen() {
   }
 
   return (
-    <>
-      <div class="px-32">
-        <div class="w-fit mx-auto">
-          <span class="font-poppins font-bold text-3xl">Blog</span>
-        </div>
+    <div class="px-32">
+      <div>
+        <h1 class="font-poppins font-bold text-3xl text-center">Blog</h1>
       </div>
-      <div class="mt-8 px-32 space-y-4">
+      <div class="mt-8 space-y-16">
         <For each={blog().data}>
           {(g) => (
-            <div class="max-h-[35rem] overflow-hidden">
-              <div>
-                <span class="block font-bold font-poppins text-center">
-                  {g.attributes.judul}
-                </span>
-              </div>
-              <p
-                innerHTML={marked.parse(
-                  manipulatePostContent(g.attributes.konten)
-                )}
-                class={`mt-2 font-futura_pt text-justify break-words ${styles.content}`}
-              />
-            </div>
+            <BlogPost
+              id={g.id}
+              title={g.attributes.judul}
+              content={g.attributes.konten}
+              createdAt={g.attributes.createdAt}
+            />
           )}
         </For>
-        <Show when={isLoading()}>
-          <For each={[0, 1, 2, 3]}>
-            {(i) => <LoadingSkeleton class="w-full h-72 rounded-xl" />}
+        <Show when={isLoading() || isError()}>
+          <For each={[0, 1, 2]}>
+            {() => <LoadingSkeleton class="w-full h-[300px] rounded-xl" />}
           </For>
         </Show>
       </div>
       <div ref={bottomItemElRef} />
-    </>
+    </div>
+  );
+}
+
+interface BlogPostProps {
+  id: string;
+  title: string;
+  content: string;
+  createdAt: string;
+}
+
+function BlogPost(props: BlogPostProps) {
+  return (
+    <div class="pt-2 px-2 border rounded-xl">
+      <div class="relative max-h-[300px] overflow-hidden">
+        <div>
+          <div>
+            <h2 class="font-bold font-poppins text-center text-xl">
+              <A href={SitePath.blog + "/" + props.id}>{props.title}</A>
+            </h2>
+          </div>
+          <div>
+            <span class="block font-futura_pt text-center">
+              {formatDateTime(props.createdAt)}
+            </span>
+          </div>
+          <p
+            innerHTML={marked.parse(manipulatePostContent(props.content))}
+            class={`mt-4 font-futura_pt text-justify break-words ${styles.content}`}
+          />
+        </div>
+        <ViewMore href={SitePath.blog + "/" + props.id} />
+      </div>
+    </div>
   );
 }

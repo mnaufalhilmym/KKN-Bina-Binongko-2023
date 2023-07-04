@@ -2,7 +2,7 @@ interface Props {
   imgUrl: string;
 }
 
-export default function HomeGalleryCard(props: Props) {
+export default function GalleryCard(props: Props) {
   return (
     <img
       src={import.meta.env.VITE_BACKEND_ENDPOINT + props.imgUrl}

@@ -20,7 +20,7 @@ export default function HomeBlogSection(props: Props) {
           when={!props.isLoading}
           fallback={
             <For each={[0, 1, 2]}>
-              {(i) => (
+              {() => (
                 <div class="w-1/3 h-96 p-4">
                   <LoadingSkeleton class="w-full h-full rounded-xl" />
                 </div>

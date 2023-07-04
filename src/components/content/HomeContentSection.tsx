@@ -1,5 +1,5 @@
 import { For, Show, createMemo, createSignal } from "solid-js";
-import Card from "../card/HomeContentCard";
+import Card from "../card/ContentCard";
 import LoadingSkeleton from "../loading/LoadingSkeleton";
 import HomeSection from "./HomeSection";
 import ViewMore from "./ViewMore";
@@ -14,7 +14,7 @@ interface Props {
   };
   readMoreHref: string;
   isLoading: boolean;
-  onClickContent: (content: ModalHomeContentProps) => void;
+  onClickContent: (content: ModalContentProps) => void;
 }
 
 export default function HomeContentSection(props: Props) {
@@ -34,23 +34,33 @@ export default function HomeContentSection(props: Props) {
           when={!props.isLoading}
           fallback={
             <For each={[0, 1, 2]}>
-              {(i) => <LoadingSkeleton class="w-60 h-96 rounded-2xl" />}
+              {() => <LoadingSkeleton class="w-60 h-96 rounded-2xl" />}
             </For>
           }
         >
           <For each={props.contents.data}>
-            {(dest) => (
+            {(data) => (
               <Card
-                name={dest.attributes.nama}
+                name={data.attributes.nama}
                 location={
-                  "lokasi" in dest.attributes
-                    ? dest.attributes.lokasi
+                  "lokasi" in data.attributes
+                    ? data.attributes.lokasi
                     : undefined
                 }
-                imageUrls={dest.attributes.foto.data.map(
+                contact={
+                  "kontak" in data.attributes
+                    ? data.attributes.kontak
+                    : undefined
+                }
+                contactName={
+                  "nama_kontak" in data.attributes
+                    ? data.attributes.nama_kontak
+                    : undefined
+                }
+                imageUrls={data.attributes.foto.data.map(
                   (d) => d.attributes.url
                 )}
-                description={dest.attributes.deskripsi}
+                description={data.attributes.deskripsi}
                 onClick={props.onClickContent}
               />
             )}

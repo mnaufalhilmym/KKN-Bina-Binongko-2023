@@ -9,5 +9,7 @@ interface IndustriI {
       }[];
     };
     deskripsi: string;
+    kontak: string;
+    nama_kontak: string;
   };
 }

@@ -5,16 +5,20 @@ import IconArrowCircle from "../icons/ArrowForwardCircle";
 interface Props {
   name: string;
   location?: string;
+  contact?: string;
+  contactName?: string;
   imageUrls: string[];
   description: string;
-  onClick: (content: ModalHomeContentProps) => void;
+  onClick: (content: ModalContentProps) => void;
 }
 
-export default function HomeContentCard(props: Props) {
+export default function ContentCard(props: Props) {
   function onClick() {
     props.onClick({
       title: props.name,
       subtitle: props.location,
+      contact: props.contact,
+      contactName: props.contactName,
       imgUrls: props.imageUrls,
       description: props.description,
     });

@@ -1,7 +1,7 @@
 import { For, Show, createMemo, createSignal } from "solid-js";
 import HomeSection from "./HomeSection";
 import LoadingSkeleton from "../loading/LoadingSkeleton";
-import Card from "../card/HomeGalleryCard";
+import Card from "../card/GalleryCard";
 import ViewMore from "./ViewMore";
 import { createElementSize } from "@solid-primitives/resize-observer";
 import SitePath from "../../data/sitePath";
@@ -30,7 +30,7 @@ export default function HomeGallerySection(props: Props) {
           when={!props.isLoading}
           fallback={
             <For each={[0, 1, 2, 3]}>
-              {(i) => <LoadingSkeleton class="h-72 w-72 rounded-xl" />}
+              {() => <LoadingSkeleton class="h-72 w-72 rounded-xl" />}
             </For>
           }
         >

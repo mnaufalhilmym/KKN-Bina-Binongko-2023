@@ -5,7 +5,7 @@
   "scripts": {
     "start": "vite",
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && mkdir -p ./dist/src/assets && cp -r ./src/assets ./dist/src/",
     "serve": "vite preview",
     "serve-prod": "vite preview --host"
   },
@@ -29,7 +29,6 @@
     "marked": "^5.1.0",
     "marked-gfm-heading-id": "^3.0.4",
     "marked-mangle": "^1.1.0",
-    "moment": "^2.29.4",
     "solid-js": "^1.7.6"
   }
 }

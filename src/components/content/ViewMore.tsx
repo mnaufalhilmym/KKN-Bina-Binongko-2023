@@ -7,7 +7,7 @@ interface Props {
 export default function ViewMore(props: Props) {
   return (
     <>
-      <div class="absolute z-10 bottom-4 w-full h-2/5 bg-gradient-to-b from-transparent to-white">
+      <div class="absolute z-10 bottom-4 left-0 right-0 w-full h-2/5 bg-gradient-to-b from-transparent to-white">
         <div class="absolute bottom-0 w-full">
           <A
             href={props.href}
@@ -17,7 +17,7 @@ export default function ViewMore(props: Props) {
           </A>
         </div>
       </div>
-      <div class="absolute -bottom-2 w-full h-6 bg-white" />
+      <div class="absolute -bottom-2 left-0 right-0 w-full h-6 bg-white" />
     </>
   );
 }

@@ -15,7 +15,7 @@ interface Config {
   cancelCallback?: () => void;
 }
 
-export class CenterModal {
+export default class CenterModalWrapper {
   private _config: Config;
   private _getIsShow: Accessor<boolean>;
   private _setIsShow: Setter<boolean>;

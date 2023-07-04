@@ -1,7 +1,6 @@
 import { RouteDefinition, useRoutes } from "@solidjs/router";
 import { Component, createRenderEffect, lazy } from "solid-js";
 import SitePath from "./data/sitePath";
-import LoadingState from "./state/loadingState";
 import Head from "./components/head/Head";
 import SiteHead from "./state/siteHead";
 import { marked } from "marked";
@@ -40,7 +39,16 @@ const routes: RouteDefinition[] = [
       },
       {
         path: getLastScreenPath(SitePath.blog),
-        component: lazy(() => import("./screens/blog/BlogScreen")),
+        children: [
+          {
+            path: "/",
+            component: lazy(() => import("./screens/blog/BlogScreen")),
+          },
+          {
+            path: "/:id",
+            component: lazy(() => import("./screens/blog/BlogDetailScreen")),
+          },
+        ],
       },
       {
         path: getLastScreenPath(SitePath.peta),
@@ -54,7 +62,6 @@ const App: Component = () => {
   const Routes = useRoutes(routes);
 
   createRenderEffect(() => {
-    LoadingState.init(false);
     SiteHead.init();
     marked.use(mangle(), gfmHeadingId());
   });

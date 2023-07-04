@@ -20,6 +20,9 @@ ul {
   background-color: rgba(0, 0, 0, 0.1);
   border-radius: 0.375rem;
 }
+.content img {
+  margin: auto;
+}
 .content img,
 pre:has(code) {
   border-radius: 0.375rem;
