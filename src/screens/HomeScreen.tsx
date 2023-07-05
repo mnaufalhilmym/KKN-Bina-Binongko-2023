@@ -1,10 +1,14 @@
 import Video from "../components/video/Video";
-import siteImages from "../contents/images";
-import siteVideos from "../contents/videos";
 import Content from "../components/content/HomeContentSection";
 import { GqlClient } from "../api/gqlClient";
 import { gql } from "@apollo/client/core";
-import { Show, createRenderEffect, createSignal, getOwner } from "solid-js";
+import {
+  Show,
+  createMemo,
+  createRenderEffect,
+  createSignal,
+  getOwner,
+} from "solid-js";
 import SiteHead from "../state/siteHead";
 import CenterModal from "../components/modal/CenterModalWrapper";
 import Gallery from "../components/content/HomeGallerySection";
@@ -13,8 +17,24 @@ import Map from "../components/content/HomeMapSection";
 import SitePath from "../data/sitePath";
 import { defaultPagination } from "../types/defaultValue/pagination";
 import ModalContent from "../components/modal/ContentModal";
+import videos from "../contents/videos";
+import images from "../contents/images";
+import { createElementSize } from "@solid-primitives/resize-observer";
+import { calculateBlogElCol, calculateEl } from "../utils/calculateElement";
 
-async function fetchHome() {
+async function fetchHome({
+  wisataLimit,
+  budayaLimit,
+  industriLimit,
+  galeriLimit,
+  blogLimit,
+}: {
+  wisataLimit: number;
+  budayaLimit: number;
+  industriLimit: number;
+  galeriLimit: number;
+  blogLimit: number;
+}) {
   const client = GqlClient.client;
 
   try {
@@ -26,8 +46,17 @@ async function fetchHome() {
       blogs: { data: BlogI[] };
     }>({
       query: gql`
-        query Home {
-          wisatas(sort: "publishedAt:asc", pagination: { limit: 4 }) {
+        query Home(
+          $wisataLimit: Int
+          $budayaLimit: Int
+          $industriLimit: Int
+          $galeriLimit: Int
+          $blogLimit: Int
+        ) {
+          wisatas(
+            sort: "publishedAt:asc"
+            pagination: { limit: $wisataLimit }
+          ) {
             meta {
               pagination {
                 total
@@ -49,7 +78,10 @@ async function fetchHome() {
               }
             }
           }
-          budayas(sort: "publishedAt:asc", pagination: { limit: 4 }) {
+          budayas(
+            sort: "publishedAt:asc"
+            pagination: { limit: $budayaLimit }
+          ) {
             meta {
               pagination {
                 total
@@ -70,7 +102,10 @@ async function fetchHome() {
               }
             }
           }
-          industris(sort: "publishedAt:asc", pagination: { limit: 4 }) {
+          industris(
+            sort: "publishedAt:asc"
+            pagination: { limit: $industriLimit }
+          ) {
             meta {
               pagination {
                 total
@@ -93,7 +128,10 @@ async function fetchHome() {
               }
             }
           }
-          galeris(sort: "publishedAt:asc", pagination: { limit: 8 }) {
+          galeris(
+            sort: "publishedAt:asc"
+            pagination: { limit: $galeriLimit }
+          ) {
             meta {
               pagination {
                 total
@@ -112,7 +150,7 @@ async function fetchHome() {
               }
             }
           }
-          blogs(sort: "publishedAt:asc") {
+          blogs(sort: "publishedAt:asc", pagination: { limit: $blogLimit }) {
             data {
               attributes {
                 judul
@@ -122,6 +160,13 @@ async function fetchHome() {
           }
         }
       `,
+      variables: {
+        wisataLimit,
+        budayaLimit,
+        industriLimit,
+        galeriLimit,
+        blogLimit,
+      },
     });
 
     return {
@@ -150,8 +195,53 @@ async function fetchHome() {
 }
 
 export default function HomeScreen() {
+  const [wisataRef, setWisataRef] = createSignal<HTMLDivElement>();
+  const [budayaRef, setBudayaRef] = createSignal<HTMLDivElement>();
+  const [industriRef, setIndustriRef] = createSignal<HTMLDivElement>();
+  const [galeriRef, setGaleriRef] = createSignal<HTMLDivElement>();
+  const [blogRef, setBlogRef] = createSignal<HTMLDivElement>();
+
+  const wisataElSize = createElementSize(wisataRef);
+  const budayaElSize = createElementSize(budayaRef);
+  const industriElSize = createElementSize(industriRef);
+  const galeriElSize = createElementSize(galeriRef);
+  const blogElSize = createElementSize(blogRef);
+
+  const wisataElCol = createMemo(() =>
+    calculateEl({
+      size: wisataElSize.width ?? 0,
+      cardSize: 240,
+      cardGap: 32,
+    })
+  );
+  const budayaElCol = createMemo(() =>
+    calculateEl({
+      size: budayaElSize.width ?? 0,
+      cardSize: 240,
+      cardGap: 32,
+    })
+  );
+  const industriElCol = createMemo(() =>
+    calculateEl({
+      size: industriElSize.width ?? 0,
+      cardSize: 240,
+      cardGap: 32,
+    })
+  );
+  const galeriElCol = createMemo(() =>
+    calculateEl({
+      size: galeriElSize.width ?? 0,
+      cardSize: 288,
+      cardGap: 16,
+    })
+  );
+  const blogElCol = createMemo(() =>
+    calculateBlogElCol({ width: blogElSize.width ?? 0 })
+  );
+
   const [isLoading, setIsLoading] = createSignal(false);
   const [isError, setIsError] = createSignal(false);
+
   const [wisata, setWisata] = createSignal<{
     pagination: PaginationI;
     data: WisataI[];
@@ -169,6 +259,7 @@ export default function HomeScreen() {
     data: GaleriI[];
   }>({ pagination: defaultPagination, data: [] });
   const [blog, setBlog] = createSignal<BlogI[]>([]);
+
   const ContentModalWrapper = new CenterModal({
     owner: getOwner(),
     cardClass: "w-2/3",
@@ -181,7 +272,22 @@ export default function HomeScreen() {
   createRenderEffect(async () => {
     setIsLoading(true);
 
-    const data = await fetchHome();
+    if (
+      !wisataElSize.width ||
+      !budayaElSize.width ||
+      !industriElSize.width ||
+      !galeriElSize.width ||
+      !blogElSize.width
+    )
+      return;
+
+    const data = await fetchHome({
+      wisataLimit: wisataElCol() * 2,
+      budayaLimit: budayaElCol() * 2,
+      industriLimit: industriElCol() * 2,
+      galeriLimit: galeriElCol() * 2,
+      blogLimit: blogElCol(),
+    });
 
     if (!data) {
       setIsError(true);
@@ -206,11 +312,12 @@ export default function HomeScreen() {
   return (
     <>
       {/* Start of hero banner */}
-      <div class="relative max-w-screen max-h-screen overflow-hidden flex items-center justify-center">
+      <div class="relative w-screen h-screen overflow-hidden flex items-center justify-center">
         <img
-          src={import.meta.env.VITE_BASE_URL + siteImages.aerial_view.url}
-          alt={siteImages.aerial_view.alt}
-          class="brightness-[0.8]"
+          src={images.aerial_view.url}
+          alt={images.aerial_view.alt}
+          loading="lazy"
+          class="w-full h-full object-cover brightness-[0.8]"
         />
         <div class="absolute text-white drop-shadow-2xl">
           <div>
@@ -226,7 +333,11 @@ export default function HomeScreen() {
       {/* Start of mengenal togo binongko */}
       <div class="pt-28 px-32 flex gap-x-8 items-center">
         <div class="flex-1 border rounded-xl overflow-hidden">
-          <Video src={siteVideos.after_movie.url} type="video/webm" />
+          <Video
+            src={videos.after_movie.url}
+            poster={images.papan_nama_togo_binongko.url}
+            type="video/webm"
+          />
         </div>
         <div class="flex-1">
           <div>
@@ -258,6 +369,9 @@ export default function HomeScreen() {
             contents={wisata()}
             readMoreHref={SitePath.wisata}
             isLoading={isLoading()}
+            col={wisataElCol()}
+            height={wisataElSize.height ?? 0}
+            setRef={setWisataRef}
             onClickContent={showModalContent}
           />
         </div>
@@ -273,6 +387,9 @@ export default function HomeScreen() {
             contents={budaya()}
             readMoreHref={SitePath.budaya_tradisi}
             isLoading={isLoading()}
+            col={budayaElCol()}
+            height={budayaElSize.height ?? 0}
+            setRef={setBudayaRef}
             onClickContent={showModalContent}
           />
         </div>
@@ -288,6 +405,9 @@ export default function HomeScreen() {
             contents={industri()}
             readMoreHref={SitePath.industri_kerajinan}
             isLoading={isLoading()}
+            col={industriElCol()}
+            height={industriElSize.height ?? 0}
+            setRef={setIndustriRef}
             onClickContent={showModalContent}
           />
         </div>
@@ -302,6 +422,9 @@ export default function HomeScreen() {
             title2="Galeri"
             galeri={galeri()}
             isLoading={isLoading()}
+            col={galeriElCol()}
+            height={galeriElSize.height ?? 0}
+            setRef={setGaleriRef}
           />
         </div>
       </Show>
@@ -310,7 +433,14 @@ export default function HomeScreen() {
       {/* Start of blog */}
       <Show when={isLoading() || (!isLoading() && blog().length > 0)}>
         <div id="blog" class="pt-28 px-32">
-          <Blog title1="" title2="Blog" blog={blog()} isLoading={isLoading()} />
+          <Blog
+            title1=""
+            title2="Blog"
+            blog={blog()}
+            isLoading={isLoading()}
+            col={blogElCol()}
+            setRef={setBlogRef}
+          />
         </div>
       </Show>
       {/* End of blog */}

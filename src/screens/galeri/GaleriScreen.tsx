@@ -13,8 +13,16 @@ import { defaultPagination } from "../../types/defaultValue/pagination";
 import SiteHead from "../../state/siteHead";
 import LoadingSkeleton from "../../components/loading/LoadingSkeleton";
 import Card from "../../components/card/GalleryCard";
+import { createElementSize } from "@solid-primitives/resize-observer";
+import { calculateEl } from "../../utils/calculateElement";
 
-async function fetchGallery({ page }: { page: number }) {
+async function fetchGallery({
+  page,
+  pageSize,
+}: {
+  page: number;
+  pageSize: number;
+}) {
   const client = GqlClient.client;
 
   try {
@@ -22,15 +30,16 @@ async function fetchGallery({ page }: { page: number }) {
       galeris: { meta: { pagination: PaginationI }; data: GaleriI[] };
     }>({
       query: gql`
-        query Gallery($page: Int) {
+        query Gallery($page: Int, $pageSize: Int) {
           galeris(
             sort: "publishedAt:asc"
-            pagination: { page: $page, pageSize: 12 }
+            pagination: { page: $page, pageSize: $pageSize }
           ) {
             meta {
               pagination {
                 page
                 pageCount
+                pageSize
               }
             }
             data {
@@ -49,6 +58,7 @@ async function fetchGallery({ page }: { page: number }) {
       `,
       variables: {
         page,
+        pageSize,
       },
     });
 
@@ -64,12 +74,30 @@ async function fetchGallery({ page }: { page: number }) {
 
 export default function GaleriScreen() {
   let bottomItemElRef: HTMLDivElement | undefined;
+
+  const [containerRef, setContainerRef] = createSignal<HTMLDivElement>();
+  const contailerElSize = createElementSize(containerRef);
+  const containerElAmount = createMemo(() => ({
+    col: calculateEl({
+      size: contailerElSize.width ?? 0,
+      cardSize: 288,
+      cardGap: 16,
+    }),
+    row: calculateEl({
+      size: window.innerHeight + 100 ?? 0,
+      cardSize: 288,
+      cardGap: 16,
+    }),
+  }));
+
   const [isLoading, setIsLoading] = createSignal(false);
   const [isError, setIsError] = createSignal(false);
+
   const [galeri, setGaleri] = createSignal<{
     pagination: PaginationI;
     data: GaleriI[];
   }>({ pagination: defaultPagination, data: [] });
+
   const [page, setPage] = createSignal(1);
   const isAllFetched = createMemo(() => {
     const pagination = galeri().pagination;
@@ -84,12 +112,15 @@ export default function GaleriScreen() {
   });
 
   createRenderEffect(() => {
+    const _pageSize = containerElAmount().col * containerElAmount().row;
+    if (!_pageSize) return;
+
     const _page = page();
 
     (async () => {
       setIsLoading(true);
 
-      const data = await fetchGallery({ page: _page });
+      const data = await fetchGallery({ page: _page, pageSize: _pageSize });
 
       if (!data) {
         setIsError(true);
@@ -97,10 +128,16 @@ export default function GaleriScreen() {
         return;
       }
 
-      setGaleri((prev) => ({
-        pagination: data.pagination,
-        data: [...prev.data, ...data.data],
-      }));
+      if (data.pagination.pageSize !== galeri().pagination.pageSize) {
+        if (data.pagination.page === 1) {
+          setGaleri(data);
+        }
+      } else if (data.pagination.page > galeri().pagination.page) {
+        setGaleri((prev) => ({
+          pagination: data.pagination,
+          data: [...prev.data, ...data.data],
+        }));
+      }
 
       setIsLoading(false);
 
@@ -143,15 +180,28 @@ export default function GaleriScreen() {
     <>
       <div class="px-32">
         <div class="w-fit mx-auto">
-          <span class="font-poppins font-bold text-3xl">Galeri</span>
+          <span class="font-poppins font-bold text-4xl">Galeri</span>
         </div>
       </div>
-      <div class="relative mt-8 px-32 flex justify-center flex-wrap gap-4">
+      <div
+        ref={setContainerRef}
+        class="relative mt-8 px-32 flex justify-center flex-wrap gap-4"
+      >
         <For each={galeri().data}>
           {(g) => <Card imgUrl={g.attributes.foto.data.attributes.url} />}
         </For>
-        <Show when={isLoading() || isError()}>
-          <For each={[0, 1, 2, 3]}>
+        <Show when={galeri().data.length === 0 || isLoading() || isError()}>
+          <For
+            each={
+              galeri().data.length
+                ? [...Array(containerElAmount().col).keys()]
+                : [
+                    ...Array(
+                      containerElAmount().col * containerElAmount().row
+                    ).keys(),
+                  ]
+            }
+          >
             {() => <LoadingSkeleton class="h-72 w-72 rounded-xl" />}
           </For>
         </Show>

@@ -71,7 +71,7 @@ export default function BlogDetailScreen() {
   return (
     <div class="px-32">
       <Show
-        when={!isLoading() && !isError()}
+        when={blog() && !isLoading() && !isError()}
         fallback={
           <>
             <div>
@@ -88,7 +88,7 @@ export default function BlogDetailScreen() {
       >
         <>
           <div>
-            <h1 class="font-bold font-poppins text-3xl text-center">
+            <h1 class="font-bold font-poppins text-4xl text-center">
               {blog()!.attributes.judul}
             </h1>
           </div>

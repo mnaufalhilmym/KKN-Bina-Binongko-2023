@@ -1,4 +1,4 @@
-import { For, Show } from "solid-js";
+import { For, Setter, Show } from "solid-js";
 import HomeSection from "./HomeSection";
 import LoadingSkeleton from "../loading/LoadingSkeleton";
 import Card from "../card/HomeBlogCard";
@@ -10,18 +10,23 @@ interface Props {
   title2: string;
   blog: BlogI[];
   isLoading: boolean;
+  col: number;
+  setRef: Setter<HTMLDivElement | undefined>;
 }
 
 export default function HomeBlogSection(props: Props) {
   return (
     <HomeSection title1={props.title1} title2={props.title2}>
-      <div class="relative max-h-[70vh] flex flex-wrap overflow-hidden">
+      <div
+        ref={props.setRef}
+        class="relative max-h-[70vh] flex justify-center overflow-hidden"
+      >
         <Show
           when={!props.isLoading}
           fallback={
-            <For each={[0, 1, 2]}>
+            <For each={[...Array(props.col).keys()]}>
               {() => (
-                <div class="w-1/3 h-96 p-4">
+                <div class="flex-1 h-[70vh] p-4">
                   <LoadingSkeleton class="w-full h-full rounded-xl" />
                 </div>
               )}
@@ -30,7 +35,7 @@ export default function HomeBlogSection(props: Props) {
         >
           <For each={props.blog}>
             {(b) => (
-              <div class="w-1/3 p-4">
+              <div class="flex-1 p-4">
                 <Card
                   title={b.attributes.judul}
                   content={b.attributes.konten}

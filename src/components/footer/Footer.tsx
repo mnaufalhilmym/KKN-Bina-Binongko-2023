@@ -1,22 +1,20 @@
+import logos from "../../contents/logos";
+
 export default function Footer() {
   return (
     <div class="p-8 bg-gargoyle_gas">
       <div class="w-fit mx-auto flex items-center gap-x-12">
+        <img src={logos.ugm.url} alt={logos.ugm.alt} class="w-32 h-32" />
         <img
-          src={import.meta.env.VITE_BASE_URL + "/src/assets/logo/ugm.webp"}
-          class="w-32 h-32"
-        />
-        <img
-          src={
-            import.meta.env.VITE_BASE_URL + "/src/assets/logo/kkn-ppm-ugm.webp"
-          }
+          src={logos.kkn_ppm_ugm.url}
+          alt={logos.kkn_ppm_ugm.alt}
+          loading="lazy"
           class="w-24 h-24"
         />
         <img
-          src={
-            import.meta.env.VITE_BASE_URL +
-            "/src/assets/logo/bina-binongko.webp"
-          }
+          src={logos.bina_binongko.url}
+          alt={logos.bina_binongko.alt}
+          loading="lazy"
           class="w-24 h-24"
         />
       </div>
@@ -40,24 +38,27 @@ export default function Footer() {
         </div>
         <div class="w-fit mx-auto mt-2 flex items-center gap-x-4">
           <img
-            src={import.meta.env.VITE_BASE_URL + "/src/assets/logo/pln.webp"}
+            src={logos.pln.url}
+            alt={logos.pln.alt}
+            loading="lazy"
             class="h-16"
           />
           <img
-            src={
-              import.meta.env.VITE_BASE_URL + "/src/assets/logo/pln-peduli.webp"
-            }
+            src={logos.pln_peduli.url}
+            alt={logos.pln_peduli.alt}
+            loading="lazy"
             class="h-16"
           />
           <img
-            src={
-              import.meta.env.VITE_BASE_URL +
-              "/src/assets/logo/gramedia-digital.webp"
-            }
+            src={logos.gramedia_digital.url}
+            alt={logos.gramedia_digital.alt}
+            loading="lazy"
             class="h-16"
           />
           <img
-            src={import.meta.env.VITE_BASE_URL + "/src/assets/logo/litara.webp"}
+            src={logos.litara.url}
+            alt={logos.litara.alt}
+            loading="lazy"
             class="h-16"
           />
         </div>

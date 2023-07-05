@@ -4,6 +4,7 @@ import SiteInfo from "../../data/siteInfo";
 import { createMemo, createSignal, onCleanup, onMount } from "solid-js";
 import getPath from "../../utils/getPath";
 import { PathE } from "../../enum/path";
+import logos from "../../contents/logos";
 
 export default function Navbar() {
   const location = useLocation<string>();
@@ -34,11 +35,8 @@ export default function Navbar() {
       >
         <div class="h-full flex gap-x-4 items-center">
           <img
-            src={
-              import.meta.env.VITE_BASE_URL +
-              "/src/assets/logo/bina-binongko.webp"
-            }
-            alt="Logo Bina Binongko"
+            src={logos.bina_binongko.url}
+            alt={logos.bina_binongko.alt}
             loading="lazy"
             class="w-16 h-16"
           />

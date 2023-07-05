@@ -18,9 +18,19 @@ import manipulatePostContent from "../../utils/manipulatePostContent";
 import ViewMore from "../../components/content/ViewMore";
 import SitePath from "../../data/sitePath";
 import formatDateTime from "../../utils/formatDateTime";
-import { A } from "@solidjs/router";
+import { A, useSearchParams } from "@solidjs/router";
+import SearchBar from "../../components/search/SearchBar";
+import { calculateEl } from "../../utils/calculateElement";
 
-async function fetchBlog({ page }: { page: number }) {
+async function fetchBlog({
+  search,
+  page,
+  pageSize,
+}: {
+  search?: string;
+  page: number;
+  pageSize: number;
+}) {
   const client = GqlClient.client;
 
   try {
@@ -28,15 +38,22 @@ async function fetchBlog({ page }: { page: number }) {
       blogs: { meta: { pagination: PaginationI }; data: BlogI[] };
     }>({
       query: gql`
-        query Blog($page: Int) {
+        query Blog($search: String, $page: Int, $pageSize: Int) {
           blogs(
+            filters: {
+              or: [
+                { judul: { containsi: $search } }
+                { konten: { containsi: $search } }
+              ]
+            }
             sort: "publishedAt:asc"
-            pagination: { page: $page, pageSize: 15 }
+            pagination: { page: $page, pageSize: $pageSize }
           ) {
             meta {
               pagination {
                 page
                 pageCount
+                pageSize
               }
             }
             data {
@@ -51,7 +68,9 @@ async function fetchBlog({ page }: { page: number }) {
         }
       `,
       variables: {
+        search,
         page,
+        pageSize,
       },
     });
 
@@ -67,12 +86,27 @@ async function fetchBlog({ page }: { page: number }) {
 
 export default function BlogScreen() {
   let bottomItemElRef: HTMLDivElement | undefined;
+
+  const containerElAmount = createMemo(() =>
+    calculateEl({
+      size: window.innerHeight + 100 ?? 0,
+      cardSize: 310,
+      cardGap: 64,
+    })
+  );
+
+  const [searchParams, setSearchParams] = useSearchParams<{
+    search?: string;
+  }>();
+
   const [isLoading, setIsLoading] = createSignal(false);
   const [isError, setIsError] = createSignal(false);
+
   const [blog, setBlog] = createSignal<{
     pagination: PaginationI;
     data: BlogI[];
   }>({ pagination: defaultPagination, data: [] });
+
   const [page, setPage] = createSignal(1);
   const isAllFetched = createMemo(() => {
     const pagination = blog().pagination;
@@ -87,13 +121,18 @@ export default function BlogScreen() {
   });
 
   createRenderEffect(() => {
+    const _search = searchParams.search;
     const _page = page();
+    const _pageSize = containerElAmount();
 
     (async () => {
       setIsLoading(true);
 
-      const data = await fetchBlog({ page: _page });
-      console.log(">>>DATA,", data);
+      const data = await fetchBlog({
+        search: _search,
+        page: _page,
+        pageSize: _pageSize,
+      });
 
       if (!data) {
         setIsError(true);
@@ -101,10 +140,16 @@ export default function BlogScreen() {
         return;
       }
 
-      setBlog((prev) => ({
-        pagination: data.pagination,
-        data: [...prev.data, ...data.data],
-      }));
+      if (data.pagination.pageSize !== blog().pagination.pageSize) {
+        if (data.pagination.page === 1) {
+          setBlog(data);
+        }
+      } else if (data.pagination.page > blog().pagination.page) {
+        setBlog((prev) => ({
+          pagination: data.pagination,
+          data: [...prev.data, ...data.data],
+        }));
+      }
 
       setIsLoading(false);
 
@@ -143,13 +188,38 @@ export default function BlogScreen() {
     }
   }
 
+  function setSearchValue(search?: string) {
+    setBlog({
+      pagination: defaultPagination,
+      data: [],
+    });
+    setSearchParams({ search });
+    setPage(1);
+  }
+
   return (
     <div class="px-32">
       <div>
-        <h1 class="font-poppins font-bold text-3xl text-center">Blog</h1>
+        <h1 class="font-poppins font-bold text-4xl text-center">Blog</h1>
       </div>
-      <div class="mt-8 space-y-16">
-        <For each={blog().data}>
+      <div class="mt-6">
+        <SearchBar
+          value={searchParams.search}
+          placeholder="Cari blog"
+          executeSearch={setSearchValue}
+        />
+      </div>
+      <div class="mt-16 space-y-16">
+        <For
+          each={blog().data}
+          fallback={
+            <Show when={!isLoading() && !isError()}>
+              <span class="block text-center">
+                Tidak ada blog yang ditemukan.
+              </span>
+            </Show>
+          }
+        >
           {(g) => (
             <BlogPost
               id={g.id}
@@ -160,7 +230,11 @@ export default function BlogScreen() {
           )}
         </For>
         <Show when={isLoading() || isError()}>
-          <For each={[0, 1, 2]}>
+          <For
+            each={
+              blog().data.length ? [0] : [...Array(containerElAmount()).keys()]
+            }
+          >
             {() => <LoadingSkeleton class="w-full h-[300px] rounded-xl" />}
           </For>
         </Show>

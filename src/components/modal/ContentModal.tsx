@@ -2,6 +2,7 @@ import { Show } from "solid-js";
 import IconLocation from "../icons/Location";
 import PhotoSlider from "../slider/PhotoSlider";
 import { A } from "@solidjs/router";
+import logos from "../../contents/logos";
 
 export default function ModalContent(props: ModalContentProps) {
   return (
@@ -31,11 +32,9 @@ export default function ModalContent(props: ModalContentProps) {
               class="mb-6 p-4 flex items-center gap-x-2 bg-gargoyle_gas/20 font-futura_pt shadow-md rounded-3xl"
             >
               <img
-                src={
-                  import.meta.env.VITE_BASE_URL +
-                  "/src/assets/logo/whatsapp.webp"
-                }
-                alt="WhatsApp logo"
+                src={logos.whatsapp.url}
+                alt={logos.whatsapp.alt}
+                loading="lazy"
                 class="w-12 h-12"
               />
               <span>Informasi dan Pemesanan ({props.contactName})</span>

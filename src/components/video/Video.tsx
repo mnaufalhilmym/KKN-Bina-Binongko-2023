@@ -1,11 +1,11 @@
 import { Show, createSignal } from "solid-js";
 import IconPlayCircle from "../icons/PlayCircle";
 import IconPauseCircle from "../icons/PauseCircle";
-import siteImages from "../../contents/images";
 import Scan from "../icons/Scan";
 
 interface Props {
   src: string;
+  poster: string;
   type?: string;
 }
 
@@ -63,15 +63,13 @@ export default function Video(props: Props) {
         preload="none"
         muted={false}
         loop={false}
-        poster={siteImages.papan_nama_togo_binongko.url}
+        poster={props.poster}
         onplay={() => setIsPlaying(true)}
         onpause={() => setIsPlaying(false)}
         onended={() => setIsPlaying(false)}
+        class="w-full h-full"
       >
-        <source
-          src={import.meta.env.VITE_BASE_URL + props.src}
-          type={props.type}
-        />
+        <source src={props.src} type={props.type} />
       </video>
     </div>
   );

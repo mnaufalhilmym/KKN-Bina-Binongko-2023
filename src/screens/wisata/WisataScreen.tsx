@@ -16,8 +16,20 @@ import Card from "../../components/card/ContentCard";
 import CenterModal from "../../components/modal/CenterModalWrapper";
 import ModalContent from "../../components/modal/ContentModal";
 import LoadingSkeleton from "../../components/loading/LoadingSkeleton";
+import { useSearchParams } from "@solidjs/router";
+import SearchBar from "../../components/search/SearchBar";
+import { createElementSize } from "@solid-primitives/resize-observer";
+import { calculateEl } from "../../utils/calculateElement";
 
-async function fetchWisata({ page }: { page: number }) {
+async function fetchWisata({
+  search,
+  page,
+  pageSize,
+}: {
+  search?: string;
+  page: number;
+  pageSize: number;
+}) {
   const client = GqlClient.client;
 
   try {
@@ -25,15 +37,22 @@ async function fetchWisata({ page }: { page: number }) {
       wisatas: { meta: { pagination: PaginationI }; data: WisataI[] };
     }>({
       query: gql`
-        query Wisata($page: Int) {
+        query Wisata($search: String, $page: Int, $pageSize: Int) {
           wisatas(
+            filters: {
+              or: [
+                { nama: { containsi: $search } }
+                { deskripsi: { containsi: $search } }
+              ]
+            }
             sort: "publishedAt:asc"
-            pagination: { page: $page, pageSize: 16 }
+            pagination: { page: $page, pageSize: $pageSize }
           ) {
             meta {
               pagination {
                 page
                 pageCount
+                pageSize
               }
             }
             data {
@@ -54,7 +73,9 @@ async function fetchWisata({ page }: { page: number }) {
         }
       `,
       variables: {
+        search,
         page,
+        pageSize,
       },
     });
 
@@ -70,12 +91,34 @@ async function fetchWisata({ page }: { page: number }) {
 
 export default function WisataScreen() {
   let bottomItemElRef: HTMLDivElement | undefined;
+
+  const [containerRef, setContainerRef] = createSignal<HTMLDivElement>();
+  const contailerElSize = createElementSize(containerRef);
+  const containerElAmount = createMemo(() => ({
+    col: calculateEl({
+      size: contailerElSize.width ?? 0,
+      cardSize: 240,
+      cardGap: 32,
+    }),
+    row: calculateEl({
+      size: window.innerHeight + 100 ?? 0,
+      cardSize: 384,
+      cardGap: 32,
+    }),
+  }));
+
+  const [searchParams, setSearchParams] = useSearchParams<{
+    search?: string;
+  }>();
+
   const [isLoading, setIsLoading] = createSignal(false);
   const [isError, setIsError] = createSignal(false);
+
   const [wisata, setWisata] = createSignal<{
     pagination: PaginationI;
     data: WisataI[];
   }>({ pagination: defaultPagination, data: [] });
+
   const [page, setPage] = createSignal(1);
   const isAllFetched = createMemo(() => {
     const pagination = wisata().pagination;
@@ -84,6 +127,7 @@ export default function WisataScreen() {
     }
     return false;
   });
+
   const ModalWrapper = new CenterModal({
     owner: getOwner(),
     cardClass: "w-2/3",
@@ -94,12 +138,20 @@ export default function WisataScreen() {
   });
 
   createRenderEffect(() => {
+    const _pageSize = containerElAmount().col * containerElAmount().row;
+    if (!_pageSize) return;
+
+    const _search = searchParams.search;
     const _page = page();
 
     (async () => {
       setIsLoading(true);
 
-      const data = await fetchWisata({ page: _page });
+      const data = await fetchWisata({
+        search: _search,
+        page: _page,
+        pageSize: _pageSize,
+      });
 
       if (!data) {
         setIsError(true);
@@ -107,10 +159,16 @@ export default function WisataScreen() {
         return;
       }
 
-      setWisata((prev) => ({
-        pagination: data.pagination,
-        data: [...prev.data, ...data.data],
-      }));
+      if (data.pagination.pageSize !== wisata().pagination.pageSize) {
+        if (data.pagination.page === 1) {
+          setWisata(data);
+        }
+      } else if (data.pagination.page > wisata().pagination.page) {
+        setWisata((prev) => ({
+          pagination: data.pagination,
+          data: [...prev.data, ...data.data],
+        }));
+      }
 
       setIsLoading(false);
 
@@ -149,6 +207,15 @@ export default function WisataScreen() {
     }
   }
 
+  function setSearchValue(search?: string) {
+    setWisata({
+      pagination: defaultPagination,
+      data: [],
+    });
+    setSearchParams({ search });
+    setPage(1);
+  }
+
   function showModal(content: ModalContentProps) {
     ModalWrapper.content = { element: ModalContent, props: [content] };
     ModalWrapper.isShow = true;
@@ -158,12 +225,31 @@ export default function WisataScreen() {
     <>
       <div class="px-32">
         <div>
-          <h1 class="font-poppins font-bold text-3xl text-center">
+          <h1 class="font-poppins font-bold text-4xl text-center">
             Tempat Wisata
           </h1>
         </div>
-        <div class="mt-8 flex justify-center flex-wrap gap-8">
-          <For each={wisata().data}>
+        <div class="mt-6">
+          <SearchBar
+            value={searchParams.search}
+            placeholder="Cari tempat wisata"
+            executeSearch={setSearchValue}
+          />
+        </div>
+        <div
+          ref={setContainerRef}
+          class="mt-16 flex justify-center flex-wrap gap-8"
+        >
+          <For
+            each={wisata().data}
+            fallback={
+              <Show when={!isLoading() && !isError()}>
+                <span class="block text-center">
+                  Tidak ada tempat wisata yang ditemukan.
+                </span>
+              </Show>
+            }
+          >
             {(b) => (
               <Card
                 name={b.attributes.nama}
@@ -175,7 +261,17 @@ export default function WisataScreen() {
             )}
           </For>
           <Show when={isLoading() || isError()}>
-            <For each={[0, 1, 2, 4]}>
+            <For
+              each={
+                wisata().data.length
+                  ? [...Array(containerElAmount().col).keys()]
+                  : [
+                      ...Array(
+                        containerElAmount().col * containerElAmount().row
+                      ).keys(),
+                    ]
+              }
+            >
               {() => <LoadingSkeleton class="w-60 h-96 rounded-2xl" />}
             </For>
           </Show>

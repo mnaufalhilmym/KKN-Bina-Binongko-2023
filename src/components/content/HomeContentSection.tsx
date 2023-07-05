@@ -1,9 +1,8 @@
-import { For, Show, createMemo, createSignal } from "solid-js";
+import { For, Setter, Show, createMemo } from "solid-js";
 import Card from "../card/ContentCard";
 import LoadingSkeleton from "../loading/LoadingSkeleton";
 import HomeSection from "./HomeSection";
 import ViewMore from "./ViewMore";
-import { createElementSize } from "@solid-primitives/resize-observer";
 
 interface Props {
   title1: string;
@@ -14,26 +13,27 @@ interface Props {
   };
   readMoreHref: string;
   isLoading: boolean;
+  col: number;
+  height: number;
+  setRef: Setter<HTMLDivElement | undefined>;
   onClickContent: (content: ModalContentProps) => void;
 }
 
 export default function HomeContentSection(props: Props) {
-  const [ref, setRef] = createSignal<HTMLDivElement>();
-  const size = createElementSize(ref);
-  const isShowViewMore = createMemo(() =>
-    size.height ? size.height > window.innerHeight * 0.7 : false
+  const isShowViewMore = createMemo(
+    () => Math.floor(props.height) >= Math.floor(window.innerHeight * 0.7)
   );
 
   return (
     <HomeSection title1={props.title1} title2={props.title2}>
       <div
-        ref={setRef}
+        ref={props.setRef}
         class="relative max-h-[70vh] flex justify-center flex-wrap gap-8 overflow-hidden"
       >
         <Show
           when={!props.isLoading}
           fallback={
-            <For each={[0, 1, 2]}>
+            <For each={[...Array(props.col).keys()]}>
               {() => <LoadingSkeleton class="w-60 h-96 rounded-2xl" />}
             </For>
           }
