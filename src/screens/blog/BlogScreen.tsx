@@ -198,7 +198,7 @@ export default function BlogScreen() {
   }
 
   return (
-    <div class="px-32">
+    <div class="px-8 sm:px-16 md:px-24 lg:px-32">
       <div>
         <h1 class="font-poppins font-bold text-4xl text-center">Blog</h1>
       </div>

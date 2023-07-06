@@ -20,8 +20,8 @@ export default function ModalContent(props: ModalContentProps) {
           <span class="block font-futura_pt text-center">{props.subtitle}</span>
         </div>
       </Show>
-      <div class="mt-8 flex gap-x-6">
-        <div class="flex-1">
+      <div class="mt-8 flex flex-col md:flex-row gap-6">
+        <div class="flex-1 max-w-[16rem] md:max-w-none mx-auto">
           <PhotoSlider imgUrls={props.imgUrls} />
         </div>
         <div class="flex-1 flex flex-col">
@@ -29,7 +29,7 @@ export default function ModalContent(props: ModalContentProps) {
             <A
               href={props.contact!}
               target="_blank"
-              class="mb-6 p-4 flex items-center gap-x-2 bg-gargoyle_gas/20 font-futura_pt shadow-md rounded-3xl"
+              class="mb-6 p-4 flex items-center gap-x-2 bg-gargoyle_gas/20 font-futura_pt drop-shadow-md rounded-3xl"
             >
               <img
                 src={logos.whatsapp.url}
@@ -40,7 +40,7 @@ export default function ModalContent(props: ModalContentProps) {
               <span>Informasi dan Pemesanan ({props.contactName})</span>
             </A>
           </Show>
-          <div class="flex-1 p-4 bg-gargoyle_gas/20 font-futura_pt shadow-md rounded-3xl">
+          <div class="flex-1 p-4 bg-gargoyle_gas/20 font-futura_pt drop-shadow-md rounded-3xl">
             <div>
               <span>Deskripsi:</span>
             </div>

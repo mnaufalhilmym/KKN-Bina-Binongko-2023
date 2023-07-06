@@ -26,7 +26,7 @@ export default function ContentCard(props: Props) {
 
   return (
     <div
-      class="w-60 h-96 group relative rounded-2xl shadow-md overflow-hidden"
+      class="w-60 h-96 group relative rounded-2xl drop-shadow-md overflow-hidden"
       role="button"
       onclick={onClick}
     >

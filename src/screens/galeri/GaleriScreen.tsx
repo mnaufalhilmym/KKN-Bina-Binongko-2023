@@ -178,14 +178,14 @@ export default function GaleriScreen() {
 
   return (
     <>
-      <div class="px-32">
+      <div class="px-8 sm:px-16 md:px-24 lg:px-32">
         <div class="w-fit mx-auto">
           <span class="font-poppins font-bold text-4xl">Galeri</span>
         </div>
       </div>
       <div
         ref={setContainerRef}
-        class="relative mt-8 px-32 flex justify-center flex-wrap gap-4"
+        class="relative mt-8 px-8 sm:px-16 md:px-24 lg:px-32 flex justify-center flex-wrap gap-4"
       >
         <For each={galeri().data}>
           {(g) => <Card imgUrl={g.attributes.foto.data.attributes.url} />}

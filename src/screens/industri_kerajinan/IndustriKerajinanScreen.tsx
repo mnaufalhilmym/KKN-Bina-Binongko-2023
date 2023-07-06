@@ -131,7 +131,7 @@ export default function IndustriKerajinanScreen() {
 
   const ModalWrapper = new CenterModal({
     owner: getOwner(),
-    cardClass: "w-2/3",
+    cardClass: "md:w-11/12 lg:w-3/4 xl:w-2/3",
   });
 
   createRenderEffect(() => {
@@ -224,7 +224,7 @@ export default function IndustriKerajinanScreen() {
 
   return (
     <>
-      <div class="px-32">
+      <div class="px-8 sm:px-16 md:px-24 lg:px-32">
         <div>
           <h1 class="font-poppins font-bold text-4xl text-center">
             Industri dan Kerajinan

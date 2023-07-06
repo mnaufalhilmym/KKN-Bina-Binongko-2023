@@ -17,7 +17,7 @@ export default function ViewMore(props: Props) {
           </A>
         </div>
       </div>
-      <div class="absolute -bottom-2 left-0 right-0 w-full h-6 bg-white" />
+      <div class="absolute z-10 -bottom-2 left-0 right-0 w-full h-6 bg-white" />
     </>
   );
 }

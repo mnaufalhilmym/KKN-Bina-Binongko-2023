@@ -3,19 +3,23 @@ import logos from "../../contents/logos";
 export default function Footer() {
   return (
     <div class="p-8 bg-gargoyle_gas">
-      <div class="w-fit mx-auto flex items-center gap-x-12">
-        <img src={logos.ugm.url} alt={logos.ugm.alt} class="w-32 h-32" />
+      <div class="w-fit mx-auto flex items-center gap-x-4 sm:gap-x-12">
+        <img
+          src={logos.ugm.url}
+          alt={logos.ugm.alt}
+          class="w-20 h-20 sm:w-32 sm:h-32"
+        />
         <img
           src={logos.kkn_ppm_ugm.url}
           alt={logos.kkn_ppm_ugm.alt}
           loading="lazy"
-          class="w-24 h-24"
+          class="w-16 h-16 sm:w-24 sm:h-24"
         />
         <img
           src={logos.bina_binongko.url}
           alt={logos.bina_binongko.alt}
           loading="lazy"
-          class="w-24 h-24"
+          class="w-16 h-16 sm:w-24 sm:h-24"
         />
       </div>
       <div class="max-w-lg mt-8 mx-auto font-futura_pt">
@@ -36,30 +40,30 @@ export default function Footer() {
         <div>
           <span class="block font-futura_pt text-center">Didukung oleh</span>
         </div>
-        <div class="w-fit mx-auto mt-2 flex items-center gap-x-4">
+        <div class="w-fit mx-auto mt-2 flex flex-wrap items-center justify-center gap-x-4">
           <img
             src={logos.pln.url}
             alt={logos.pln.alt}
             loading="lazy"
-            class="h-16"
+            class="h-10 sm:h-16"
           />
           <img
             src={logos.pln_peduli.url}
             alt={logos.pln_peduli.alt}
             loading="lazy"
-            class="h-16"
+            class="h-10 h-16"
           />
           <img
             src={logos.gramedia_digital.url}
             alt={logos.gramedia_digital.alt}
             loading="lazy"
-            class="h-16"
+            class="h-10 h-16"
           />
           <img
             src={logos.litara.url}
             alt={logos.litara.alt}
             loading="lazy"
-            class="h-16"
+            class="h-10 h-16"
           />
         </div>
       </div>

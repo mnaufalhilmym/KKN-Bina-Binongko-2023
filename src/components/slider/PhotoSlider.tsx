@@ -31,9 +31,17 @@ export default function PhotoSlider(props: Props) {
     }
   }
 
+  function gotoIndex(idx: number) {
+    if (isTransitioning()) return;
+    setIsTransitioning(true);
+    console.log(position());
+    setPosition((idx + 1) * -100);
+    console.log(position());
+  }
+
   return (
     <div class="relative group">
-      <div class="rounded-3xl shadow-md overflow-hidden">
+      <div class="rounded-3xl drop-shadow-md overflow-hidden">
         <div
           class="flex"
           classList={{
@@ -96,6 +104,22 @@ export default function PhotoSlider(props: Props) {
             class="w-8 h-8 text-white translate-x-[120%] group-hover:translate-x-0 transition-transform"
           />
         </Button>
+      </div>
+      <div class="absolute bottom-0 left-1/2 -translate-x-1/2">
+        <For each={props.imgUrls}>
+          {(i, idx) => (
+            <button
+              onclick={() => gotoIndex(idx())}
+              class={`w-2 h-2 mx-1 rounded-full ${
+                idx() === position() / -100 - 1 ||
+                (idx() === props.imgUrls.length - 1 && position() === 0) ||
+                (idx() === 0 && position() / -100 - 1 === props.imgUrls.length)
+                  ? "bg-white"
+                  : "bg-white/60"
+              }`}
+            />
+          )}
+        </For>
       </div>
     </div>
   );

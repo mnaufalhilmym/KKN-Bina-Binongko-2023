@@ -262,7 +262,7 @@ export default function HomeScreen() {
 
   const ContentModalWrapper = new CenterModal({
     owner: getOwner(),
-    cardClass: "w-2/3",
+    cardClass: "md:w-11/12 lg:w-3/4 xl:w-2/3",
   });
 
   createRenderEffect(() => {
@@ -312,7 +312,7 @@ export default function HomeScreen() {
   return (
     <>
       {/* Start of hero banner */}
-      <div class="relative w-screen h-screen overflow-hidden flex items-center justify-center">
+      <div class="relative max-w-screen h-screen overflow-hidden flex items-center justify-center">
         <img
           src={images.aerial_view.url}
           alt={images.aerial_view.alt}
@@ -321,17 +321,21 @@ export default function HomeScreen() {
         />
         <div class="absolute text-white drop-shadow-2xl">
           <div>
-            <span class="font-tahu text-5xl">KKN-PPM UGM 2023</span>
+            <span class="font-tahu text-lg sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl">
+              KKN-PPM UGM 2023
+            </span>
           </div>
           <div>
-            <span class="font-poppins font-bold text-9xl">Bina Binongko</span>
+            <span class="font-poppins font-bold text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl">
+              Bina Binongko
+            </span>
           </div>
         </div>
       </div>
       {/* End of hero banner */}
 
       {/* Start of mengenal togo binongko */}
-      <div class="pt-28 px-32 flex gap-x-8 items-center">
+      <div class="pt-28 px-8 sm:px-16 md:px-24 lg:px-32 flex flex-col-reverse lg:flex-row gap-8 items-center">
         <div class="flex-1 border rounded-xl overflow-hidden">
           <Video
             src={videos.after_movie.url}
@@ -342,10 +346,14 @@ export default function HomeScreen() {
         <div class="flex-1">
           <div>
             <div>
-              <span class="font-tahu text-2xl text-sea_serpent">Mengenal</span>
+              <span class="block font-tahu text-2xl text-sea_serpent text-center lg:text-left">
+                Mengenal
+              </span>
             </div>
             <div>
-              <span class="font-poppins font-bold text-3xl">Togo Binongko</span>
+              <span class="block font-poppins font-bold text-3xl text-center lg:text-left">
+                Togo Binongko
+              </span>
             </div>
           </div>
           <div class="mt-4">
@@ -362,7 +370,7 @@ export default function HomeScreen() {
 
       {/* Start of jelajahi togo binongko */}
       <Show when={isLoading() || (!isLoading() && wisata().data.length > 0)}>
-        <div id="wisata" class="pt-28 px-32">
+        <div id="wisata" class="pt-28 px-8 sm:px-16 md:px-24 lg:px-32">
           <Content
             title1="Jelajahi"
             title2="Destinasi Wisata"
@@ -380,7 +388,7 @@ export default function HomeScreen() {
 
       {/* Start of budaya dan tradisi */}
       <Show when={isLoading() || (!isLoading() && budaya().data.length > 0)}>
-        <div id="budaya-tradisi" class="pt-28 px-32">
+        <div id="budaya-tradisi" class="pt-28 px-8 sm:px-16 md:px-24 lg:px-32">
           <Content
             title1="Nikmati"
             title2="Budaya dan Tradisi"
@@ -398,7 +406,10 @@ export default function HomeScreen() {
 
       {/* Start of industri dan kerajinan */}
       <Show when={isLoading() || (!isLoading() && industri().data.length > 0)}>
-        <div id="industri-kerajinan" class="pt-28 px-32">
+        <div
+          id="industri-kerajinan"
+          class="pt-28 px-8 sm:px-16 md:px-24 lg:px-32"
+        >
           <Content
             title1="Kenali"
             title2="Industri dan Kerajinan"
@@ -416,7 +427,7 @@ export default function HomeScreen() {
 
       {/* Start of galeri */}
       <Show when={isLoading() || (!isLoading() && galeri().data.length > 0)}>
-        <div id="galeri" class="pt-28 px-32">
+        <div id="galeri" class="pt-28 px-8 sm:px-16 md:px-24 lg:px-32">
           <Gallery
             title1=""
             title2="Galeri"
@@ -432,13 +443,14 @@ export default function HomeScreen() {
 
       {/* Start of blog */}
       <Show when={isLoading() || (!isLoading() && blog().length > 0)}>
-        <div id="blog" class="pt-28 px-32">
+        <div id="blog" class="pt-28 px-8 sm:px-16 md:px-24 lg:px-32">
           <Blog
             title1=""
             title2="Blog"
             blog={blog()}
             isLoading={isLoading()}
             col={blogElCol()}
+            height={blogElSize.height ?? 0}
             setRef={setBlogRef}
           />
         </div>
@@ -446,7 +458,7 @@ export default function HomeScreen() {
       {/* End of blog */}
 
       {/* Start of peta */}
-      <div id="peta" class="pt-28 px-32">
+      <div id="peta" class="pt-28 px-8 sm:px-16 md:px-24 lg:px-32">
         <Map title1="" title2="Peta" />
       </div>
       {/* End of peta */}

@@ -69,13 +69,13 @@ export default function BlogDetailScreen() {
   });
 
   return (
-    <div class="px-32">
+    <div class="px-8 sm:px-16 md:px-24 lg:px-32">
       <Show
         when={blog() && !isLoading() && !isError()}
         fallback={
           <>
             <div>
-              <LoadingSkeleton class="w-[38rem] h-10 mx-auto rounded-xl" />
+              <LoadingSkeleton class="w-full lg:w-[38rem] h-10 mx-auto rounded-xl" />
             </div>
             <div class="mt-2">
               <LoadingSkeleton class="w-[20rem] h-8 mx-auto rounded-xl" />
