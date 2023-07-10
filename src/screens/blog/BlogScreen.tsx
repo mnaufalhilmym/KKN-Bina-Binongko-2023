@@ -15,7 +15,7 @@ import LoadingSkeleton from "../../components/loading/LoadingSkeleton";
 import { marked } from "marked";
 import styles from "../../styles/blog.module.css";
 import manipulatePostContent from "../../utils/manipulatePostContent";
-import ViewMore from "../../components/content/ViewMore";
+import ViewMore from "../../components/homeContent/ViewMore";
 import SitePath from "../../data/sitePath";
 import formatDateTime from "../../utils/formatDateTime";
 import { A, useSearchParams } from "@solidjs/router";

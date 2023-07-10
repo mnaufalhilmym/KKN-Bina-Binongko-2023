@@ -1,5 +1,5 @@
 import Video from "../components/video/Video";
-import Content from "../components/content/HomeContentSection";
+import Content from "../components/homeContent/HomeContentSection";
 import { GqlClient } from "../api/gqlClient";
 import { gql } from "@apollo/client/core";
 import {
@@ -11,9 +11,9 @@ import {
 } from "solid-js";
 import SiteHead from "../state/siteHead";
 import CenterModal from "../components/modal/CenterModalWrapper";
-import Gallery from "../components/content/HomeGallerySection";
-import Blog from "../components/content/HomeBlogSection";
-import Map from "../components/content/HomeMapSection";
+import Gallery from "../components/homeContent/HomeGallerySection";
+import Blog from "../components/homeContent/HomeBlogSection";
+import Map from "../components/homeContent/HomeMapSection";
 import SitePath from "../data/sitePath";
 import { defaultPagination } from "../types/defaultValue/pagination";
 import ModalContent from "../components/modal/ContentModal";
@@ -335,7 +335,7 @@ export default function HomeScreen() {
       {/* End of hero banner */}
 
       {/* Start of mengenal togo binongko */}
-      <div class="pt-28 px-8 sm:px-16 md:px-24 lg:px-32 flex flex-col-reverse lg:flex-row gap-8 items-center">
+      <div class="relative pt-28 px-8 sm:px-16 md:px-24 lg:px-32 flex flex-col-reverse lg:flex-row gap-8 items-center">
         <div class="flex-1 border rounded-xl overflow-hidden">
           <Video
             src={videos.after_movie.url}
