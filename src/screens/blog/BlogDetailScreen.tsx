@@ -69,7 +69,7 @@ export default function BlogDetailScreen() {
   });
 
   return (
-    <div class="px-8 sm:px-16 md:px-24 lg:px-32">
+    <div class="max-w-screen-xl mx-auto px-8 sm:px-16 md:px-24 lg:px-32">
       <Show
         when={blog() && !isLoading() && !isError()}
         fallback={

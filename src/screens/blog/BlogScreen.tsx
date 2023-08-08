@@ -46,7 +46,7 @@ async function fetchBlog({
                 { konten: { containsi: $search } }
               ]
             }
-            sort: "publishedAt:asc"
+            sort: "publishedAt:desc"
             pagination: { page: $page, pageSize: $pageSize }
           ) {
             meta {
@@ -235,7 +235,9 @@ export default function BlogScreen() {
               blog().data.length ? [0] : [...Array(containerElAmount()).keys()]
             }
           >
-            {() => <LoadingSkeleton class="w-full h-[300px] rounded-xl" />}
+            {() => (
+              <LoadingSkeleton class="w-full max-w-screen-xl h-[400px] mx-auto rounded-xl" />
+            )}
           </For>
         </Show>
       </div>
@@ -253,8 +255,11 @@ interface BlogPostProps {
 
 function BlogPost(props: BlogPostProps) {
   return (
-    <div class="pt-2 px-2 border rounded-xl">
-      <div class="relative max-h-[300px] overflow-hidden">
+    <div class="max-w-screen-xl mx-auto pt-2 px-2 border rounded-xl">
+      <A
+        href={SitePath.blog + "/" + props.id}
+        class="block relative max-h-[400px] overflow-hidden"
+      >
         <div>
           <div>
             <h2 class="font-bold font-poppins text-center text-xl">
@@ -272,7 +277,7 @@ function BlogPost(props: BlogPostProps) {
           />
         </div>
         <ViewMore href={SitePath.blog + "/" + props.id} />
-      </div>
+      </A>
     </div>
   );
 }

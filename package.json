@@ -2,6 +2,7 @@
   "name": "bina-binongko",
   "version": "0.0.1",
   "description": "",
+  "author": "Muhammad Naufal Hilmy Makarim <mail@hilmy.dev> (https://hilmy.dev)",
   "scripts": {
     "start": "vite",
     "dev": "vite",

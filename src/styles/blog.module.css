@@ -10,10 +10,12 @@ ul {
   padding-left: 1.75rem;
 }
 .content li {
-  margin-bottom: 8px;
+  margin-bottom: 16px;
 }
 .content p {
-  margin-bottom: 8px;
+  margin-bottom: 16px;
+  font-size: large;
+  line-height: 1.75rem;
 }
 .content p > code {
   padding: 3px;
@@ -22,6 +24,9 @@ ul {
 }
 .content img {
   margin: auto;
+  margin-bottom: 16px;
+  max-width: 500px;
+  max-height: 500px;
 }
 .content img,
 pre:has(code) {
