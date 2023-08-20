@@ -45,11 +45,17 @@ export default function Footer() {
             src={logos.pln.url}
             alt={logos.pln.alt}
             loading="lazy"
-            class="h-10 sm:h-16"
+            class="h-10 h-16"
           />
           <img
             src={logos.pln_peduli.url}
             alt={logos.pln_peduli.alt}
+            loading="lazy"
+            class="h-10 h-16"
+          />
+          <img
+            src={logos.bank_mandiri.url}
+            alt={logos.bank_mandiri.alt}
             loading="lazy"
             class="h-10 h-16"
           />

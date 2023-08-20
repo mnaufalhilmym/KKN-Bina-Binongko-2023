@@ -19,6 +19,10 @@ export default {
     url: import.meta.env.VITE_BASE_URL + "/src/assets/logo/pln-peduli.webp",
     alt: "Logo PLN Peduli",
   },
+  bank_mandiri: {
+    url: import.meta.env.VITE_BASE_URL + "/src/assets/logo/bank-mandiri.webp",
+    alt: "Logo Bank Mandiri",
+  },
   gramedia_digital: {
     url:
       import.meta.env.VITE_BASE_URL + "/src/assets/logo/gramedia-digital.webp",
