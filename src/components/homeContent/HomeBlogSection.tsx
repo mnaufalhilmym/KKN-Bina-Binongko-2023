@@ -51,7 +51,7 @@ export default function HomeBlogSection(props: Props) {
           >
             <For each={props.blog}>
               {(b) => (
-                <div class="flex-1 p-4">
+                <div class="min-w-0 flex-1 p-4">
                   <Card
                     title={b.attributes.judul}
                     content={b.attributes.konten}

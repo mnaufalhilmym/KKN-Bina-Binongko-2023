@@ -17,10 +17,10 @@ import styles from "../../styles/blog.module.css";
 import manipulatePostContent from "../../utils/manipulatePostContent";
 import ViewMore from "../../components/homeContent/ViewMore";
 import SitePath from "../../data/sitePath";
-import formatDateTime from "../../utils/formatDateTime";
 import { A, useSearchParams } from "@solidjs/router";
 import SearchBar from "../../components/search/SearchBar";
 import { calculateEl } from "../../utils/calculateElement";
+import { formatDatetime } from "../../utils/formatDatetime";
 
 async function fetchBlog({
   search,
@@ -268,7 +268,7 @@ function BlogPost(props: BlogPostProps) {
           </div>
           <div>
             <span class="block font-futura_pt text-center">
-              {formatDateTime(props.createdAt)}
+              {formatDatetime(props.createdAt)}
             </span>
           </div>
           <p

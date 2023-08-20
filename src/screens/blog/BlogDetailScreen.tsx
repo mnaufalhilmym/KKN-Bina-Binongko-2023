@@ -4,10 +4,10 @@ import { useParams } from "@solidjs/router";
 import { Show, createRenderEffect, createSignal } from "solid-js";
 import SiteHead from "../../state/siteHead";
 import LoadingSkeleton from "../../components/loading/LoadingSkeleton";
-import formatDateTime from "../../utils/formatDateTime";
 import { marked } from "marked";
 import manipulatePostContent from "../../utils/manipulatePostContent";
 import styles from "../../styles/blog.module.css";
+import { formatDatetime } from "../../utils/formatDatetime";
 
 async function fetchBlogDetail({ id }: { id: string }) {
   const client = GqlClient.client;
@@ -94,7 +94,7 @@ export default function BlogDetailScreen() {
           </div>
           <div class="mt-2">
             <span class="block font-futura_pt text-center">
-              {formatDateTime(blog()!.attributes.createdAt)}
+              {formatDatetime(blog()!.attributes.createdAt)}
             </span>
           </div>
           <div class="mt-8">
